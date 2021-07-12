@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration scan="false">
+	<statusListener class="ch.qos.logback.core.status.NopStatusListener" />
+
+	<appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+		<encoder>
+			<pattern>%d{dd/MM HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n</pattern>
+		</encoder>
+	</appender>
+
+	<appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<file>log/pegasus-rest-api.log</file>
+		<append>true</append>
+<!-- 		<filter class="ch.qos.logback.classic.filter.ThresholdFilter"> -->
+<!-- 			<level>ERROR</level> -->
+<!-- 		</filter> -->
+		<rollingPolicy class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy">
+	        <fileNamePattern>log/pegasus-rest-api.log.%i.zip</fileNamePattern>
+	        <minIndex>1</minIndex>
+	        <maxIndex>10</maxIndex>
+	    </rollingPolicy>
+	    <triggeringPolicy class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
+	        <maxFileSize>10MB</maxFileSize>
+	    </triggeringPolicy>
+		<encoder>
+			<pattern>%d{dd/MM HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n</pattern>
+		</encoder>
+	</appender>
+	<appender name="ANALYTICS-FILE" class="ch.qos.logback.core.FileAppender">
+        <file>log/executions.log</file>
+        <append>true</append>
+        <encoder>
+			<pattern>%d{dd/MM HH:mm:ss} %logger{36} - %msg%n</pattern>
+		</encoder>
+    </appender>
+
+	<logger name="MonitorLogging" level="INFO" additivity="true">
+		<appender-ref ref="STDOUT"/>
+        <appender-ref ref="ANALYTICS-FILE"/>
+    </logger>
+    
+	<root level="INFO">
+		<appender-ref ref="STDOUT" />
+		<appender-ref ref="FILE" />
+	</root>
+</configuration>

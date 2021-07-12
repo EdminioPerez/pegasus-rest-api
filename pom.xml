@@ -1,0 +1,123 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
+		<groupId>swf.assent</groupId>
+		<artifactId>swf-rest-services-bom</artifactId>
+		<version>3.0.1-SNAPSHOT</version>
+	</parent>
+
+	<groupId>com.greek</groupId>
+	<artifactId>pegasus-rest-api</artifactId>
+	<version>1.0.0-SNAPSHOT</version>
+	<packaging>${packagingType}</packaging>
+
+	<properties>
+		<spring.boot.mainClass>com.greek.service.RestServicesApplication</spring.boot.mainClass>
+
+		<eclipse-collections.version>8.2.0</eclipse-collections.version>
+
+		<sonar.host.url>http://localhost:9000</sonar.host.url>
+		<sonar.login>1d663f2bc6709b2d01bce2da883fafb5f0c9349f</sonar.login>
+
+		<sonar.projectName>pegasus-rest-api</sonar.projectName>
+		<sonar.exclusions>**/ServletRestServicesApplication.java</sonar.exclusions>
+	</properties>
+
+	<build>
+		<finalName>pegasus-rest-api</finalName>
+	</build>
+
+	<dependencies>
+		<dependency>
+			<groupId>com.greek</groupId>
+			<artifactId>pegasus-commons</artifactId>
+			<version>1.0.0-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>com.greek</groupId>
+			<artifactId>pegasus-main-domain</artifactId>
+			<version>1.0.0-SNAPSHOT</version>
+		</dependency>
+
+		<!--  as we have a starter for postgresql, we must move this to there -->
+		<dependency>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate-jcache</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.ehcache</groupId>
+			<artifactId>jcache</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.postgresql</groupId>
+			<artifactId>postgresql</artifactId>
+		</dependency>
+
+		<!-- This and the logboook spring starter to a new lib for logging -->
+		<dependency>
+			<groupId>net.logstash.logback</groupId>
+			<artifactId>logstash-logback-encoder</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.projectlombok</groupId>
+			<artifactId>lombok</artifactId>
+			<scope>provided</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>com.github.javafaker</groupId>
+			<artifactId>javafaker</artifactId>
+			<scope>compile</scope>
+		</dependency>
+
+		<!-- Custom starters -->
+		<dependency>
+			<groupId>swf.assent</groupId>
+			<artifactId>swf-boot-starter-swagger</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>swf.assent</groupId>
+			<artifactId>swf-boot-starter-simon</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>swf.assent</groupId>
+			<artifactId>swf-boot-starter-security-oauth2</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>swf.assent</groupId>
+			<artifactId>swf-boot-starter-jpa-postgresql</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>swf.assent</groupId>
+			<artifactId>swf-boot-starter-http-support</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>swf.assent</groupId>
+			<artifactId>swf-boot-starter-rest-components</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>swf.assent</groupId>
+			<artifactId>swf-crud-components</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<scope>test</scope>
+			<exclusions>
+				<exclusion>
+					<groupId>org.hamcrest</groupId>
+					<artifactId>hamcrest-core</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		<dependency>
+			<groupId>org.hamcrest</groupId>
+			<artifactId>hamcrest-library</artifactId>
+			<scope>test</scope>
+		</dependency>
+	</dependencies>
+</project>
