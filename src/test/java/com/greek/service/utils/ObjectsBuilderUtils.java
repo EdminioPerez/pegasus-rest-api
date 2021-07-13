@@ -1,5 +1,8 @@
 package com.greek.service.utils;
 
+import java.time.LocalDate;
+import java.time.Period;
+
 import org.apache.commons.lang3.RandomStringUtils;
 
 import com.github.javafaker.Faker;
@@ -15,7 +18,7 @@ public class ObjectsBuilderUtils {
 		PersonDTO personDTO = new PersonDTO();
 		personDTO.setName(faker.name().firstName());
 		personDTO.setLastName(faker.name().lastName() + " " + faker.name().lastName());
-		personDTO.setIdentityDocumentTypeId(2L);
+		personDTO.setIdentityDocumentTypeId(1L);
 		personDTO.setIdentityDocument(
 				RandomStringUtils.randomAlphanumeric(1) + "-" + RandomStringUtils.randomNumeric(14));
 		personDTO.setSanitaryDocument(
@@ -25,14 +28,16 @@ public class ObjectsBuilderUtils {
 		personDTO.setEmail(faker.internet().emailAddress());
 		personDTO.setAddressLine1(faker.address().fullAddress());
 		personDTO.setAddressLine2(faker.address().secondaryAddress());
-		personDTO.setProvinceId(14L);
-		personDTO.setMunicipalityId(872L);
-		personDTO.setPostalCodeId(1476L);
-		personDTO.setBirthDate(new java.sql.Date(faker.date().birthday().getTime()).toLocalDate());
+//		personDTO.setProvinceId(14L);
+//		personDTO.setMunicipalityId(872L);
+		personDTO.setPostalCodeId(faker.random().nextInt(1, 14665).longValue()); // 1476L
+		LocalDate birthDate = new java.sql.Date(faker.date().birthday().getTime()).toLocalDate();
+		personDTO.setBirthDate(birthDate);
+		personDTO.setAge((float) Period.between(birthDate, LocalDate.now()).getYears());
 		personDTO.setUrl1FileName(faker.file().fileName());
-		personDTO.setSexId(1L);
-		personDTO.setBloodGroupId(1L);
-		personDTO.setCountryBirthId(12L);
+		personDTO.setSexId(faker.random().nextInt(1, 2).longValue());
+		personDTO.setBloodGroupId(faker.random().nextInt(1, 8).longValue());
+		personDTO.setCountryBirthId(faker.random().nextInt(1, 14).longValue());
 
 		return personDTO;
 	}

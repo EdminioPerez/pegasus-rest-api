@@ -12,12 +12,12 @@ import org.mapstruct.MappingTarget;
 import org.mapstruct.Named;
 import org.mapstruct.NullValuePropertyMappingStrategy;
 
-import com.gvt.core.reflect.ReflectionUtils;
-import com.greek.main.hibernate.model.Persona;
-import com.gvt.rest.crud.mappers.EntityMapper;
 import com.greek.commons.dto.v1.person.PersonDTO;
 import com.greek.commons.dto.v1.person.PersonListDTO;
+import com.greek.main.hibernate.model.Persona;
 import com.greek.service.mappers.decorators.PersonMapperDecorator;
+import com.gvt.core.reflect.ReflectionUtils;
+import com.gvt.rest.crud.mappers.EntityMapper;
 
 @Mapper(componentModel = "spring")
 @DecoratedWith(PersonMapperDecorator.class)

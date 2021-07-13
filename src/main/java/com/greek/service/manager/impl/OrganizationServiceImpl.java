@@ -4,9 +4,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.greek.main.hibernate.model.Organizacion;
 import com.greek.service.manager.OrganizationService;
 import com.greek.service.repositories.OrganizationRepository;
-import com.greek.main.hibernate.model.Organizacion;
 
 @Service
 @Transactional(readOnly = true)
@@ -24,8 +24,8 @@ public class OrganizationServiceImpl implements OrganizationService {
 		Long retValue = null;
 
 		Organizacion organizacion = organizationRepository.findOrganizationForWrite(organizacionId);
-		
-		retValue= organizacion.getId();
+
+		retValue = organizacion.getId();
 
 //		if (tipoDocumentoEnum == TipoDocumentoEnum.EMPLEADO) {
 //			retValue = organizacion.getNextNroPedido();

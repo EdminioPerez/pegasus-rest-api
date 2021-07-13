@@ -13,22 +13,19 @@
 	<artifactId>pegasus-rest-api</artifactId>
 	<version>1.0.0-SNAPSHOT</version>
 	<packaging>${packagingType}</packaging>
+	
+	<name>pegasus-rest-api</name>
 
 	<properties>
 		<spring.boot.mainClass>com.greek.service.RestServicesApplication</spring.boot.mainClass>
 
 		<eclipse-collections.version>8.2.0</eclipse-collections.version>
 
-		<sonar.host.url>http://localhost:9000</sonar.host.url>
-		<sonar.login>1d663f2bc6709b2d01bce2da883fafb5f0c9349f</sonar.login>
-
 		<sonar.projectName>pegasus-rest-api</sonar.projectName>
-		<sonar.exclusions>**/ServletRestServicesApplication.java</sonar.exclusions>
+		<sonar.projectKey>EdminioPerez_pegasus-rest-api</sonar.projectKey>
+		<sonar.organization>hdacostac-github</sonar.organization>
+		<sonar.host.url>https://sonarcloud.io</sonar.host.url>
 	</properties>
-
-	<build>
-		<finalName>pegasus-rest-api</finalName>
-	</build>
 
 	<dependencies>
 		<dependency>

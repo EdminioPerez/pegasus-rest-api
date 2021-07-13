@@ -64,6 +64,8 @@ public class PersonServiceImpl implements PersonService {
 	@Override
 	@Transactional(readOnly = false)
 	public Persona save(Persona entityToSave) {
+		log.debug("Value of entity for saving:{}", entityToSave);
+
 		preValidationsOnPersonUpdate(entityToSave);
 
 		CategoriaPersona categoriaPersona = new CategoriaPersona();

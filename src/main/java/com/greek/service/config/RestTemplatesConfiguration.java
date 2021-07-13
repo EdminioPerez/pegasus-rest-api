@@ -11,6 +11,8 @@ import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.StringHttpMessageConverter;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.web.client.RestTemplate;
+import org.zalando.logbook.Logbook;
+import org.zalando.logbook.spring.LogbookClientHttpRequestInterceptor;
 
 import com.gvt.rest.http.client.LocaleHeaderInterceptor;
 import com.gvt.rest.web.client.DefaultResponseErrorHandler;
@@ -21,7 +23,7 @@ public class RestTemplatesConfiguration {
 
 	@Bean
 	public RestTemplate restTemplate(MappingJackson2HttpMessageConverter mappingJackson2HttpMessageConverter,
-			ClientHttpRequestFactory clientHttpRequestFactory) {
+			ClientHttpRequestFactory clientHttpRequestFactory, Logbook logbook) {
 		RestTemplate restTemplate = new RestTemplate();
 
 		List<HttpMessageConverter<?>> messageConverters = new ArrayList<>();
@@ -34,6 +36,7 @@ public class RestTemplatesConfiguration {
 		restTemplate.setMessageConverters(messageConverters);
 		restTemplate.getInterceptors().add(new LocaleHeaderInterceptor());
 		restTemplate.getInterceptors().add(new AuthorizationHeaderInterceptor());
+		restTemplate.getInterceptors().add(new LogbookClientHttpRequestInterceptor(logbook));
 
 		return restTemplate;
 	}

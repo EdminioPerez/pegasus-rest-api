@@ -24,13 +24,12 @@ import com.greek.service.manager.UserService;
 import com.gvt.data.JPAConfiguration;
 import com.gvt.data.security.support.SecurityEvaluationContextExtension;
 import com.gvt.rest.RestServicesConfiguration;
-import com.gvt.rest.context.i18n.Translator;
 import com.gvt.security.test.context.support.WithMockedUser;
 
 import lombok.extern.slf4j.Slf4j;
 
 @RunWith(SpringRunner.class)
-@ContextConfiguration(classes = { JPAConfiguration.class, DataSourceAutoConfiguration.class, Translator.class,
+@ContextConfiguration(classes = { JPAConfiguration.class, DataSourceAutoConfiguration.class,
 		RestServicesConfiguration.class, SecurityEvaluationContextExtension.class, UserServiceImpl.class,
 		PersonServiceImpl.class, OrganizationServiceImpl.class })
 @EnableJpaRepositories(basePackages = { "com.greek.service.repositories" })
@@ -48,7 +47,7 @@ public class UserServiceLayerIT {
 	public void saveAppUsers() {
 		log.trace("Trying to save a user into the app");
 
-//		extracted();
+		extracted();
 	}
 
 	private void extracted() {
@@ -57,16 +56,14 @@ public class UserServiceLayerIT {
 		systemUser.setNombres(faker.name().firstName());
 		systemUser.setApellidos(faker.name().lastName() + " " + faker.name().lastName());
 		systemUser.setCedula(RandomStringUtils.randomAlphanumeric(1) + "-" + RandomStringUtils.randomNumeric(14));
-		systemUser.setEmail("hdacostac@gmail.com");
-//		systemUser.setEmail(faker.internet().emailAddress());
-		systemUser.setContrasena("{bcrypt}$2a$10$rv8TpMkATdDTRUcuIWYh/uXxm.Szc.NKAGdZu9cLrjPJC27IHlyoe");
+		systemUser.setEmail(faker.internet().emailAddress());
+		systemUser.setContrasena("{bcrypt}$2a$10$rv8TpMkATdDTRUcuIWYh/uXxm.Szc.NKAGdZu9cLrjPJC27IHlyoe"); // 1234
 		systemUser.setTelefono(faker.phoneNumber().cellPhone());
 
 		log.trace("Numeric value:{}", RandomStringUtils.randomNumeric(1, 4));
 
 		ClientDTO client = new ClientDTO();
 		client.setId(Long.valueOf(RandomStringUtils.randomNumeric(1, 4)));
-//		client.setCedula("Y4997202Y");
 		client.setCedula(systemUser.getCedula());
 		client.setRazonSocial(systemUser.getNombres() + " " + systemUser.getApellidos());
 		client.setDireccion(faker.address().fullAddress());

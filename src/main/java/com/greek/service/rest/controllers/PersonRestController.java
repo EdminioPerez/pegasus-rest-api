@@ -1,8 +1,10 @@
 package com.greek.service.rest.controllers;
 
+import javax.validation.Valid;
 import javax.validation.Validator;
 
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -15,8 +17,11 @@ import com.greek.service.manager.SimpleDomainService;
 import com.greek.service.mappers.PersonMapper;
 import com.gvt.rest.crud.controllers.CrudRestController;
 
+import lombok.extern.slf4j.Slf4j;
+
 @RestController
 @RequestMapping("/api/v1/persons")
+@Slf4j
 public class PersonRestController extends CrudRestController<PersonDTO, PersonListDTO, Persona> {
 
 	private SimpleDomainService simpleDomainService;
@@ -33,7 +38,8 @@ public class PersonRestController extends CrudRestController<PersonDTO, PersonLi
 	}
 
 	@Override
-	public PersonDTO save(PersonDTO dto) {
+	public PersonDTO save(@RequestBody @Valid PersonDTO dto) {
+		log.debug("DTO coming in the request:{}", dto);
 		PersonDTO savedEntity = null;
 
 		try {

@@ -26,10 +26,6 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
 import com.github.javafaker.Faker;
-import com.gvt.security.SecurityConstants;
-import com.gvt.security.SecurityOAuth2Configuration;
-import com.gvt.security.test.context.support.WithMockedUser;
-import com.gvt.security.test.utils.JwtTestUtils;
 import com.greek.service.TestRestServicesApplication;
 import com.greek.service.exceptions.PersonAlreadyExistsDifferentOrganizationException;
 import com.greek.service.exceptions.PersonAlreadyExistsSameOrganizationException;
@@ -37,6 +33,10 @@ import com.greek.service.manager.PersonService;
 import com.greek.service.manager.SimpleDomainService;
 import com.greek.service.mappers.PersonMapperImpl_;
 import com.greek.service.utils.ObjectsBuilderUtils;
+import com.gvt.security.SecurityConstants;
+import com.gvt.security.SecurityOAuth2Configuration;
+import com.gvt.security.test.context.support.WithMockedUser;
+import com.gvt.security.test.utils.JwtTestUtils;
 
 @RunWith(SpringRunner.class)
 @WebMvcTest(controllers = { PersonRestController.class })

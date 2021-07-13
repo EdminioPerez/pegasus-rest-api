@@ -15,14 +15,14 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.MDC;
 import org.zalando.logbook.CorrelationId;
 
-public class CorrelationIdMDCInjectionFilter implements Filter {
+public class CorrelationMDCInjectionFilter implements Filter {
 
 	private final String USER_KEY = "username";
 	private final String CORRELATION_ID = "correlationId";
 
 	private CorrelationId correlationId;
 
-	public CorrelationIdMDCInjectionFilter(CorrelationId correlationId) {
+	public CorrelationMDCInjectionFilter(CorrelationId correlationId) {
 		this.correlationId = correlationId;
 	}
 

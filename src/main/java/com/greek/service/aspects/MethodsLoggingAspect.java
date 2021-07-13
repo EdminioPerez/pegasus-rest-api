@@ -11,7 +11,7 @@ import lombok.extern.slf4j.Slf4j;
 @Aspect
 @Component
 @Slf4j
-public class LogComponentsAspect {
+public class MethodsLoggingAspect {
 
 	@Around("methodsToBeProfiled()")
 	public Object profile(ProceedingJoinPoint pjp) throws Throwable {

@@ -24,7 +24,7 @@ ENV STANDALONE_RUN false
 
 ENV PROXY_OPTS "" 
 ENV REGION_OPTS -Duser.timezone=UTC -Duser.language=en
-ENV JAVA_OPTS "-Xms256m -Xmx256m -Xss256k -noverify -XX:+UseG1GC -XX:+UseStringDeduplication -Djava.net.preferIPv4Stack=true -Dfile.encoding=UTF-8 $PROXY_OPTS $REGION_OPTS -server"
+ENV JAVA_OPTS "-noverify -Xms256m -Xmx256m -Xss256k -XX:+UnlockExperimentalVMOptions -XX:+UseZGC -XX:+UseStringDeduplication -XX:+OptimizeStringConcat -Djava.net.preferIPv4Stack=true -Dfile.encoding=UTF-8 $PROXY_OPTS $REGION_OPTS -server"
 
 RUN echo 'root:Docker!' | chpasswd
 

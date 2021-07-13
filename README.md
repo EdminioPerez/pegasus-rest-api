@@ -1,4 +1,4 @@
-# Template for a web application with Spring 5
+# Template for a microservice application with SpringBoot 2.4.x
 
 Template for web application with Spring 5
 It provides support for
@@ -12,63 +12,62 @@ It provides support for
 - Logging
 - Web Monitoring
 - Life check
+- DTO handling
 
-1. Clone the project from git repository.
-2. Import the project in the IDE as maven project
-3. Modify the class com.greek.service.ServletRestServicesConfiguration
-	```java
-	return application.properties("spring.config.name:[name of the module]").sources(applicationClass);
-	```
-4. Modify the pom.xml file
-	```xml
-	<artifactId>[name of the module]</artifactId>
-	<build>
-	  <finalName>[name of the module]</artifactId>
-	</build>
-	```
-5. Modify the docker file
-	```xml
-	ADD target/[name of jar as created in finalName].jar  /tmp
-	```
-6. Modify the script entrypoint.sh
-	  - The line where we extract the properties for the application from swf-env-properties.git
-		```xml
-			cp ${CONFIG_FILES_DIR}/mlm/${ENV_NAME}/[name of the module].properties /home/app/application.properties
-		```
-	  - And the last line in the same file
-		```xml
-			java -Dspring.config.location=file:/home/app/ $JAVA_OPTS -jar [name of the jar].jar
-		```
-7. Find and replace any reference to rest-example in the whole project (even IDE files)
-8. Download the dependencies using maven
-9. Build the project using maven
+## First running
+
+As the project may need mapstruct previously for dtos creation, before running it you need to do:
+```sh
+$ mvn clean compile
+```
+
+### Running with eclipse
 
 Right button on the project > Run as > Spring Boot App
 
-When eclipse asks for the class to run, select RestServicesApplication
-Build the project using maven (mvn clean package or install)
+When eclipse asks for the class to run, select **RestServicesApplication**
+
+## Packaging of the project
+
+Build the project using maven
 ```sh
 $ mvn clean package -Pdocker [-Dmaven.test.skip=true]
 ```
-enter into target directory and run the resultant jar with the command: 
+**Note**: Never run the *install* command for a microservice, it does not make any sense to install locally a microservice jar
+
+## Running for the first time
+
+### Creating the first user in the app
+
+Go to **com.greek.service.manager.impl.UserServiceLayerIT** class and:
+- Uncomment the line **extracted();**
+- Run the test over this file only
+- If everything is ok, check the table **usuario** in the DB and you will have the first user of the app in the field **codigo_usuario**
+- Check the table **organizacion** you must see 3 rows (group, organization, venue)
+- Check the table **usuario_organizacion** and you will have the user recently created linked to this organizations
+- Check the table **rol_usuario** and you will have the user recently created linked to a specific role
+- Check the table **persona** and you will have the person data related to this user
+- Check the table **persona_organizacion** and you will have the person linked to this group previously created
+
+Enter into target directory and run the resultant jar with the command: 
 ```sh
 $ java -jar <name of the jar>
 ```
 
-First you must compile and package the project with docker profile with:
-```sh
-$ mvn clean package -Pdocker [-Dmaven.test.skip=true]
-```
-And after that you can do
-```sh
-$ docker-compose build
-$ docker-compose up -d
-```
+## Dockerization
 
-You can find swagger in http[s]://[host]:[port]/swagger-ui
+If you are using linux OS, you have the utility script for compiling, packaging and image creation for docker script
+```sh
+$ ./createDocker.sh
+```
+Refer to the content of this file to know the manual steps for dockerization 
+
+## Tools
+### Swagger
+You can find swagger in http[s]://[host]:[port]/[context]/swagger-ui.html
 
 Example:
-http://localhost:9191/swagger-ui
+http://localhost:9191/bank/swagger-ui.html
 
 You can find actuator in in http[s]://[host]:[port]/actuator
 
@@ -85,7 +84,7 @@ http://localhost:9191/performance-monitor/index.html
 ## Performance tips
 
 ### For the JVM (even in development mode)
--noverify -Xms256m -Xmx256m -Xss256k -XX:+UseG1GC -XX:+UseStringDeduplication -Djava.net.preferIPv4Stack=true -Dfile.encoding=UTF-8
+-noverify -Xms256m -Xmx256m -Xss256k -XX:+UnlockExperimentalVMOptions -XX:+UseZGC -XX:+UseStringDeduplication -XX:+OptimizeStringConcat -Djava.net.preferIPv4Stack=true -Dfile.encoding=UTF-8 -Duser.timezone=UTC -Duser.language=en
 
 ### For the Docker
 Use adoptopenjdk/openjdk11:x86_64-alpine-jre-11.0.11_9 image (fixed version)
@@ -93,7 +92,7 @@ Use adoptopenjdk/openjdk11:x86_64-alpine-jre-11.0.11_9 image (fixed version)
 ## ELK startup
 docker run -d -p 5601:5601 -p 9200:9200 -p 5044:5044 -p 9600:9600 -p 4560:4560 -v ${HOME}/elk-data:/var/lib/elasticsearch -v ${HOME}/logstash/conf.d:/etc/logstash/conf.d --name elk sebp/elk
 
-## Value of logstash.conf
+#### Value of logstash.conf
 Inside the logstash/conf.d/logstash.conf
 ```
 input {

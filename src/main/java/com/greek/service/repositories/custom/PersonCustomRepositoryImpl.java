@@ -16,8 +16,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.repository.query.Param;
 
 import com.greek.main.hibernate.model.Persona;
-import com.gvt.security.utils.JwtUtils;
 import com.greek.service.repositories.PersonCustomRepository;
+import com.gvt.security.utils.JwtUtils;
 
 public class PersonCustomRepositoryImpl implements PersonCustomRepository {
 

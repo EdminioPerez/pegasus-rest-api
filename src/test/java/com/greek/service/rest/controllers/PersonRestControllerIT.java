@@ -1,7 +1,6 @@
 package com.greek.service.rest.controllers;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.util.HashMap;
@@ -27,7 +26,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
@@ -47,7 +45,7 @@ import lombok.extern.slf4j.Slf4j;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = { RestServicesApplication.class }, webEnvironment = WebEnvironment.RANDOM_PORT)
-@WithMockedUser(centersIds = { 4, 5, 6 }, rootCenterId = 4)
+@WithMockedUser(centersIds = { 1, 2, 3 }, rootCenterId = 1)
 @Slf4j
 public class PersonRestControllerIT {
 
@@ -74,28 +72,12 @@ public class PersonRestControllerIT {
 		requestEntity = new HttpEntity<>(requestHeaders);
 	}
 
-//	@After
-	@Transactional(readOnly = false)
-	public void onTestDone() {
-		log.debug("************************************* BEGIN DELETE");
-//		personRepository.deleteById(personDTO.getId());
-		log.debug("************************************* END DELETE");
+	@Test
+	public void save_person() {
+		this.saveFullPerson();
 	}
 
 //	@Test
-	public void when_get_by_id_ok() {
-		uriComponents.path(PREFIX + "/{id}");
-
-		Map<String, String> pathParams = new HashMap<>();
-//		pathParams.put("id", personDTO.getId().toString());
-
-		ResponseEntity<PersonDTO> person = restTemplate.exchange(uriComponents.buildAndExpand(pathParams).toUriString(),
-				HttpMethod.GET, requestEntity, PersonDTO.class);
-
-		assertNotNull(((PersonDTO) person.getBody()).getId());
-	}
-
-	@Test
 	public void patch_person_ok() throws Exception {
 		PersonDTO personDTO = saveFullPerson();
 
@@ -213,7 +195,7 @@ public class PersonRestControllerIT {
 		patchAndDoComparison(pathParams, personDTO, personPatchDTO);
 	}
 
-	@Test
+//	@Test
 	public void patch_person_nullify_ok() throws Exception {
 		PersonDTO personDTO = saveFullPerson();
 
@@ -332,7 +314,7 @@ public class PersonRestControllerIT {
 		patchAndDoComparison(pathParams, personDTO, personPatchDTO);
 	}
 
-	@Test
+//	@Test
 	public void post_invalid_combo_values() {
 		PersonDTO personDTO = ObjectsBuilderUtils.createFullPersonDTO(faker);
 		personDTO.setCountryBirthId(8888L);
@@ -405,7 +387,7 @@ public class PersonRestControllerIT {
 		}
 	}
 
-	@Test
+//	@Test
 	public void post_integrity_data_based_on_jwt() {
 		PersonDTO personDTO = ObjectsBuilderUtils.createFullPersonDTO(faker);
 		personDTO.setIdentityDocumentTypeId(10L);
@@ -429,7 +411,7 @@ public class PersonRestControllerIT {
 
 	}
 
-	@Test
+//	@Test
 	public void patch_integrity_data_based_on_jwt() {
 		log.debug("*************************************************************************");
 
@@ -449,7 +431,7 @@ public class PersonRestControllerIT {
 		}
 	}
 
-	@Test
+//	@Test
 	public void patch_invalid_combo_values() {
 		log.debug("*************************************************************************");
 
@@ -532,6 +514,7 @@ public class PersonRestControllerIT {
 
 	private PersonDTO saveFullPerson() {
 		PersonDTO personDTO = ObjectsBuilderUtils.createFullPersonDTO(faker);
+		log.debug("DTO prepared in the request:{}", personDTO);
 
 		ResponseEntity<PersonDTO> savedPersonResponse = restTemplate.exchange(
 				buildUriComponent().path(PREFIX).build().toUriString(), HttpMethod.POST, new HttpEntity<>(personDTO),
@@ -543,8 +526,8 @@ public class PersonRestControllerIT {
 		personDTO.setCode(savedPersonResponse.getBody().getCode());
 		personDTO.setVersion(savedPersonResponse.getBody().getVersion());
 
-		log.debug("Person1:{}", personDTO);
-		log.debug("Person2:{}", savedPersonResponse.getBody());
+		log.debug("Person created by DTO		:{}", personDTO);
+		log.debug("Person saved from response	:{}", savedPersonResponse.getBody());
 
 		assertTrue("No son iguales", EqualsBuilder.reflectionEquals(savedPersonResponse.getBody(), personDTO, false));
 
@@ -568,15 +551,5 @@ public class PersonRestControllerIT {
 	private UriComponentsBuilder buildUriComponent() {
 		return UriComponentsBuilder.newInstance().scheme("http").host("localhost").port(serverPort);
 	}
-
-//	private PersonDTO getPerson(long id) {
-//		Map<String, String> pathParams = new HashMap<>();
-//		pathParams.put("id", String.valueOf(id));
-//
-//		return restTemplate.exchange(
-//				UriComponentsBuilder.newInstance().scheme("http").host("localhost").port(serverPort)
-//						.path(PREFIX + "/{id}").buildAndExpand(pathParams).toUriString(),
-//				HttpMethod.GET, new HttpEntity<>(personDTO), PersonDTO.class).getBody();
-//	}
 
 }
