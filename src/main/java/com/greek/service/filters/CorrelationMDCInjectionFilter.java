@@ -17,8 +17,8 @@ import org.zalando.logbook.CorrelationId;
 
 public class CorrelationMDCInjectionFilter implements Filter {
 
-	private final String USER_KEY = "username";
-	private final String CORRELATION_ID = "correlationId";
+	private static final String USER_KEY = "username";
+	private static final String CORRELATION_ID = "correlationId";
 
 	private CorrelationId correlationId;
 
@@ -27,6 +27,7 @@ public class CorrelationMDCInjectionFilter implements Filter {
 	}
 
 	public void destroy() {
+		// Destroy empty method
 	}
 
 	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)

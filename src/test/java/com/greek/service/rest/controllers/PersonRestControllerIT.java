@@ -74,7 +74,15 @@ public class PersonRestControllerIT {
 
 	@Test
 	public void save_person() {
-		this.saveFullPerson();
+		PersonDTO firstSave = this.saveFullPerson();
+
+		try {
+			ResponseEntity<PersonDTO> savedPersonResponse = restTemplate.exchange(
+					buildUriComponent().path(PREFIX).build().toUriString(), HttpMethod.POST,
+					new HttpEntity<>(firstSave), PersonDTO.class);
+		} catch (ValidationException e) {
+			assertEquals(e.getMessage(), "error.person.already.exists.same.organization");
+		}
 	}
 
 //	@Test
@@ -514,7 +522,6 @@ public class PersonRestControllerIT {
 
 	private PersonDTO saveFullPerson() {
 		PersonDTO personDTO = ObjectsBuilderUtils.createFullPersonDTO(faker);
-		log.debug("DTO prepared in the request:{}", personDTO);
 
 		ResponseEntity<PersonDTO> savedPersonResponse = restTemplate.exchange(
 				buildUriComponent().path(PREFIX).build().toUriString(), HttpMethod.POST, new HttpEntity<>(personDTO),

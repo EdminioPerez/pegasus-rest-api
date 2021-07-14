@@ -39,7 +39,6 @@ public class PersonRestController extends CrudRestController<PersonDTO, PersonLi
 
 	@Override
 	public PersonDTO save(@RequestBody @Valid PersonDTO dto) {
-		log.debug("DTO coming in the request:{}", dto);
 		PersonDTO savedEntity = null;
 
 		try {

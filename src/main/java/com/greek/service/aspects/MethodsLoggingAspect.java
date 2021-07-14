@@ -26,6 +26,7 @@ public class MethodsLoggingAspect {
 
 	@Pointcut("within(com.greek..*)")
 	public void methodsToBeProfiled() {
+		// Used as method entry for the aspect
 	}
 
 }
