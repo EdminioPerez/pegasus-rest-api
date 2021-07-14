@@ -27,8 +27,9 @@ public final class AuthenticationUtils {
 	public static void checkValidOrganizationIdInToken(Long idToSearch) {
 		for (Long centerId : JwtUtils.getJwtAuthenticationDetails().getCentersIds()) {
 			log.trace("Comparing idToSearch:{} with {}", idToSearch, centerId);
-			if (idToSearch == centerId)
+			if (idToSearch.equals(centerId)) {
 				return;
+			}
 		}
 
 		throw new LogicException("Token integrity violation", "error.security.token.integrity");

@@ -81,7 +81,7 @@ public class PersonRestControllerIT {
 					buildUriComponent().path(PREFIX).build().toUriString(), HttpMethod.POST,
 					new HttpEntity<>(firstSave), PersonDTO.class);
 		} catch (ValidationException e) {
-			assertEquals(e.getMessage(), "error.person.already.exists.same.organization");
+			assertEquals("error.person.already.exists.same.organization", e.getMessage());
 		}
 	}
 

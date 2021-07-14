@@ -26,10 +26,12 @@ public class CorrelationMDCInjectionFilter implements Filter {
 		this.correlationId = correlationId;
 	}
 
+	@Override
 	public void destroy() {
 		// Destroy empty method
 	}
 
+	@Override
 	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
 			throws IOException, ServletException {
 		boolean successfulRegistration = false;
@@ -54,7 +56,9 @@ public class CorrelationMDCInjectionFilter implements Filter {
 		}
 	}
 
+	@Override
 	public void init(FilterConfig arg0) throws ServletException {
+		// init empty method
 	}
 
 	/**
