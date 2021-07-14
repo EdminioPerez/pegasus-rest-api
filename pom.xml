@@ -13,7 +13,7 @@
 	<artifactId>pegasus-rest-api</artifactId>
 	<version>1.0.0-SNAPSHOT</version>
 	<packaging>${packagingType}</packaging>
-	
+
 	<name>pegasus-rest-api</name>
 
 	<properties>
@@ -39,7 +39,7 @@
 			<version>1.0.0-SNAPSHOT</version>
 		</dependency>
 
-		<!--  as we have a starter for postgresql, we must move this to there -->
+		<!-- as we have a starter for postgresql, we must move this to there -->
 		<dependency>
 			<groupId>org.hibernate</groupId>
 			<artifactId>hibernate-jcache</artifactId>
