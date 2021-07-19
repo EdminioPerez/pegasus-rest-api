@@ -16,10 +16,10 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartException;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.greek.commons.dto.v1.simple.KeyValueResponseDTO;
 import com.greek.commons.dto.v1.simple.ValidationAnnotatedDTO;
 import com.gvt.core.exceptions.LogicException;
 import com.gvt.core.response.FieldErrorResource;
+import com.gvt.rest.utils.dtos.KeyValueResponseDTO;
 
 @RestController
 @RequestMapping("/api/v1/exception-handling")
