@@ -4,6 +4,8 @@ import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.hibernate.ObjectNotFoundException;
 import org.springframework.context.MessageSource;
@@ -12,6 +14,7 @@ import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.data.rest.webmvc.ResourceNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -23,6 +26,7 @@ import com.greek.service.exceptions.PersonAlreadyExistsSameOrganizationException
 import com.greek.service.utils.DatabaseConstraintUtils;
 import com.gvt.core.response.ErrorResponse;
 import com.gvt.data.controllers.DefaultJPAExceptionHandlerController;
+import com.gvt.rest.utils.RequestUtils;
 
 import io.micrometer.core.instrument.util.StringUtils;
 import lombok.extern.slf4j.Slf4j;
@@ -67,6 +71,12 @@ public class ExceptionControllerAdviceConfiguration {
 			}
 		}
 
+		HttpServletRequest currentRequest = RequestUtils.getCurrentHttpRequest();
+		if (currentRequest != null) {
+			error.setPath(currentRequest.getRequestURI());
+			error.setMethod(currentRequest.getMethod());
+		}
+
 		return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
 	}
 
@@ -96,14 +106,13 @@ public class ExceptionControllerAdviceConfiguration {
 			new ErrorResponse("Data integrity with unknown constraint", "exception.constraint.undefined", "8000");
 		}
 
+		HttpServletRequest currentRequest = RequestUtils.getCurrentHttpRequest();
+		if (currentRequest != null) {
+			error.setPath(currentRequest.getRequestURI());
+			error.setMethod(currentRequest.getMethod());
+		}
+
 		return new ResponseEntity<>(error, HttpStatus.UNPROCESSABLE_ENTITY);
-	}
-
-	@ExceptionHandler(value = { NoSuchElementException.class, ObjectNotFoundException.class })
-	public ResponseEntity<ErrorResponse> noSuchElementExceptionHandler(Exception ex) {
-		ErrorResponse error = new ErrorResponse("Entity not foud", "exception.entity.not.found", "12000");
-
-		return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
 	}
 
 }

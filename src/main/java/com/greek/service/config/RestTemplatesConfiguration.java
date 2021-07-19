@@ -10,12 +10,12 @@ import org.springframework.http.converter.FormHttpMessageConverter;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.StringHttpMessageConverter;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
+import org.springframework.web.client.DefaultResponseErrorHandler;
 import org.springframework.web.client.RestTemplate;
 import org.zalando.logbook.Logbook;
 import org.zalando.logbook.spring.LogbookClientHttpRequestInterceptor;
 
 import com.gvt.rest.http.client.LocaleHeaderInterceptor;
-import com.gvt.rest.web.client.DefaultResponseErrorHandler;
 import com.gvt.security.http.client.AuthorizationHeaderInterceptor;
 
 @Configuration

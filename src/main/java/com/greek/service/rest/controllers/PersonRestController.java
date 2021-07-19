@@ -4,8 +4,12 @@ import javax.validation.Valid;
 import javax.validation.Validator;
 
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.greek.commons.dto.v1.person.PersonDTO;
@@ -39,24 +43,28 @@ public class PersonRestController extends CrudRestController<PersonDTO, PersonLi
 
 	@Override
 	public PersonDTO save(@RequestBody @Valid PersonDTO dto) {
-		PersonDTO savedEntity = null;
+		PersonDTO savedPersonDTO = null;
 
 		try {
-			savedEntity = super.save(dto);
+			Persona personEntity = personService.save(personMapper.fromDTOToEntityForSave(dto));
+			savedPersonDTO = personMapper.fromEntityToDTO(personEntity);
+
+			savedPersonDTO.setProvinceId(personEntity.getCodigoPostal().getProvincia().getId());
+			savedPersonDTO.setMunicipalityId(personEntity.getCodigoPostal().getPoblacion().getId());
 		} catch (DataIntegrityViolationException e) {
 			personService.checkPersonIsPresentBehaviour(personMapper.fromDTOToEntityForSave(dto), e);
 		}
 
-		if (savedEntity != null) {
-			savedEntity.setProvinceId(dto.getProvinceId());
-			savedEntity.setMunicipalityId(dto.getMunicipalityId());
-		}
+//		if (savedPersonDTO != null) {
+//			savedPersonDTO.setProvinceId(dto.getProvinceId());
+//			savedPersonDTO.setMunicipalityId(dto.getMunicipalityId());
+//		}
 
-		return savedEntity;
+		return savedPersonDTO;
 	}
 
 	@Override
-	public PersonDTO patch(Long id, PersonDTO dto) {
+	public PersonDTO patch(@PathVariable("id") Long id, @RequestBody PersonDTO dto) {
 		PersonDTO updatedEntity = super.patch(id, dto);
 
 		CodigoPostal postalCode = simpleDomainService.findPostalCodeById(updatedEntity.getPostalCodeId());

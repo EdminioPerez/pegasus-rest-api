@@ -3,6 +3,8 @@ package com.greek.service.rest.controllers;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
+import java.time.LocalDate;
+import java.time.Period;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
@@ -26,6 +28,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
@@ -72,15 +75,33 @@ public class PersonRestControllerIT {
 		requestEntity = new HttpEntity<>(requestHeaders);
 	}
 
+//	@Test
+	public void save_full_person() {
+		// The assertions are in the saveFullPerson
+		log.debug("************************");
+		this.saveFullPerson();
+	}
+
+//	@Test
+	public void save_minimal_person() {
+		// The assertions are in the saveMinimalPerson
+		log.debug("************************");
+		this.saveMinimalPerson();
+	}
+
 	@Test
-	public void save_person() {
+	public void save_full_person_already_exists() {
+		log.debug("************************");
 		PersonDTO firstSave = this.saveFullPerson();
 
 		try {
-			ResponseEntity<PersonDTO> savedPersonResponse = restTemplate.exchange(
-					buildUriComponent().path(PREFIX).build().toUriString(), HttpMethod.POST,
+			restTemplate.exchange(buildUriComponent().path(PREFIX).build().toUriString(), HttpMethod.POST,
 					new HttpEntity<>(firstSave), PersonDTO.class);
-		} catch (ValidationException e) {
+
+			assertTrue(false);
+		} catch (HttpClientErrorException e) {
+			log.debug("Body of the error:{}", e.getResponseBodyAsString());
+			log.debug("Exception:{}", e);
 			assertEquals("error.person.already.exists.same.organization", e.getMessage());
 		}
 	}
@@ -116,7 +137,7 @@ public class PersonRestControllerIT {
 		log.debug("*************************************************************************");
 
 		personPatchDTO = new PersonDTO();
-		personPatchDTO.setIdentityDocumentTypeId(1L);
+		personPatchDTO.setIdentityDocumentTypeId(2L);
 		personDTO.setIdentityDocumentTypeId(personPatchDTO.getIdentityDocumentTypeId());
 		patchAndDoComparison(pathParams, personDTO, personPatchDTO);
 
@@ -180,8 +201,16 @@ public class PersonRestControllerIT {
 		log.debug("*************************************************************************");
 
 		personPatchDTO = new PersonDTO();
-		personPatchDTO.setBirthDate(new java.sql.Date(faker.date().birthday().getTime()).toLocalDate());
+		LocalDate birthDate = new java.sql.Date(faker.date().birthday().getTime()).toLocalDate();
+		personPatchDTO.setBirthDate(birthDate);
 		personDTO.setBirthDate(personPatchDTO.getBirthDate());
+		patchAndDoComparison(pathParams, personDTO, personPatchDTO);
+
+		log.debug("*************************************************************************");
+
+		personPatchDTO = new PersonDTO();
+		personPatchDTO.setAge((float) Period.between(birthDate, LocalDate.now()).getYears());
+		personDTO.setAge(personPatchDTO.getAge());
 		patchAndDoComparison(pathParams, personDTO, personPatchDTO);
 
 		log.debug("*************************************************************************");
@@ -194,9 +223,9 @@ public class PersonRestControllerIT {
 		log.debug("*************************************************************************");
 
 		personPatchDTO = new PersonDTO();
-		personPatchDTO.setSexId(2L);
-		personPatchDTO.setBloodGroupId(2L);
-		personPatchDTO.setCountryBirthId(14L);
+		personPatchDTO.setSexId(faker.random().nextInt(1, 2).longValue());
+		personPatchDTO.setBloodGroupId(faker.random().nextInt(1, 8).longValue());
+		personPatchDTO.setCountryBirthId(faker.random().nextInt(1, 14).longValue());
 		personDTO.setSexId(personPatchDTO.getSexId());
 		personDTO.setBloodGroupId(personPatchDTO.getBloodGroupId());
 		personDTO.setCountryBirthId(personPatchDTO.getCountryBirthId());
@@ -325,23 +354,23 @@ public class PersonRestControllerIT {
 //	@Test
 	public void post_invalid_combo_values() {
 		PersonDTO personDTO = ObjectsBuilderUtils.createFullPersonDTO(faker);
-		personDTO.setCountryBirthId(8888L);
+		personDTO.setIdentityDocumentTypeId(8888L);
 		try {
 			restTemplate.exchange(buildUriComponent().path(PREFIX).build().toUriString(), HttpMethod.POST,
 					new HttpEntity<>(personDTO), PersonDTO.class);
 			assertTrue(false);
 		} catch (DataIntegrityException e) {
-			assertEquals("exception.geographic.location.not.exists", e.getMessageKey());
+			assertEquals("exception.identity.document.type.not.exists", e.getMessageKey());
 		}
 
 		personDTO = ObjectsBuilderUtils.createFullPersonDTO(faker);
-		personDTO.setBloodGroupId(8888L);
+		personDTO.setPostalCodeId(888888L);
 		try {
 			restTemplate.exchange(buildUriComponent().path(PREFIX).build().toUriString(), HttpMethod.POST,
 					new HttpEntity<>(personDTO), PersonDTO.class);
 			assertTrue(false);
 		} catch (DataIntegrityException e) {
-			assertEquals("exception.blood.group.not.exists", e.getMessageKey());
+			assertEquals("exception.postal.code.not.exists", e.getMessageKey());
 		}
 
 		personDTO = ObjectsBuilderUtils.createFullPersonDTO(faker);
@@ -355,6 +384,30 @@ public class PersonRestControllerIT {
 		}
 
 		personDTO = ObjectsBuilderUtils.createFullPersonDTO(faker);
+		personDTO.setBloodGroupId(8888L);
+		try {
+			restTemplate.exchange(buildUriComponent().path(PREFIX).build().toUriString(), HttpMethod.POST,
+					new HttpEntity<>(personDTO), PersonDTO.class);
+			assertTrue(false);
+		} catch (DataIntegrityException e) {
+			assertEquals("exception.blood.group.not.exists", e.getMessageKey());
+		}
+
+		personDTO = ObjectsBuilderUtils.createFullPersonDTO(faker);
+		personDTO.setCountryBirthId(8888L);
+		try {
+			restTemplate.exchange(buildUriComponent().path(PREFIX).build().toUriString(), HttpMethod.POST,
+					new HttpEntity<>(personDTO), PersonDTO.class);
+			assertTrue(false);
+		} catch (DataIntegrityException e) {
+			assertEquals("exception.geographic.location.not.exists", e.getMessageKey());
+		}
+
+	}
+
+//	@Test
+	public void post_dto_validations() {
+		PersonDTO personDTO = ObjectsBuilderUtils.createFullPersonDTO(faker);
 		personDTO.setBirthDate(new java.sql.Date(faker.date().future(10, TimeUnit.DAYS).getTime()).toLocalDate());
 		try {
 			restTemplate.exchange(buildUriComponent().path(PREFIX).build().toUriString(), HttpMethod.POST,
@@ -374,25 +427,6 @@ public class PersonRestControllerIT {
 			assertEquals("error.validation.age.Min", e.getMessage());
 		}
 
-		personDTO = ObjectsBuilderUtils.createFullPersonDTO(faker);
-		personDTO.setPostalCodeId(888888L);
-		try {
-			restTemplate.exchange(buildUriComponent().path(PREFIX).build().toUriString(), HttpMethod.POST,
-					new HttpEntity<>(personDTO), PersonDTO.class);
-			assertTrue(false);
-		} catch (DataIntegrityException e) {
-			assertEquals("exception.postal.code.not.exists", e.getMessageKey());
-		}
-
-		personDTO = ObjectsBuilderUtils.createFullPersonDTO(faker);
-		personDTO.setIdentityDocumentTypeId(8888L);
-		try {
-			restTemplate.exchange(buildUriComponent().path(PREFIX).build().toUriString(), HttpMethod.POST,
-					new HttpEntity<>(personDTO), PersonDTO.class);
-			assertTrue(false);
-		} catch (DataIntegrityException e) {
-			assertEquals("exception.identity.document.type.not.exists", e.getMessageKey());
-		}
 	}
 
 //	@Test
@@ -521,8 +555,14 @@ public class PersonRestControllerIT {
 	}
 
 	private PersonDTO saveFullPerson() {
-		PersonDTO personDTO = ObjectsBuilderUtils.createFullPersonDTO(faker);
+		return saveAndAssertPerson(ObjectsBuilderUtils.createFullPersonDTO(faker));
+	}
 
+	private PersonDTO saveMinimalPerson() {
+		return saveAndAssertPerson(ObjectsBuilderUtils.createMinimalPersonDTO(faker));
+	}
+
+	private PersonDTO saveAndAssertPerson(PersonDTO personDTO) {
 		ResponseEntity<PersonDTO> savedPersonResponse = restTemplate.exchange(
 				buildUriComponent().path(PREFIX).build().toUriString(), HttpMethod.POST, new HttpEntity<>(personDTO),
 				PersonDTO.class);
@@ -531,6 +571,9 @@ public class PersonRestControllerIT {
 
 		personDTO.setId(savedPersonResponse.getBody().getId());
 		personDTO.setCode(savedPersonResponse.getBody().getCode());
+		personDTO.setHomePhone(savedPersonResponse.getBody().getHomePhone());
+		personDTO.setMunicipalityId(savedPersonResponse.getBody().getMunicipalityId());
+		personDTO.setProvinceId(savedPersonResponse.getBody().getProvinceId());
 		personDTO.setVersion(savedPersonResponse.getBody().getVersion());
 
 		log.debug("Person created by DTO		:{}", personDTO);
@@ -541,18 +584,18 @@ public class PersonRestControllerIT {
 		return savedPersonResponse.getBody();
 	}
 
-	private void patchAndDoComparison(Map<String, String> pathParams, PersonDTO personDTO, PersonDTO personPatchDTO) {
-		personPatchDTO = restTemplate
+	private void patchAndDoComparison(Map<String, String> pathParams, PersonDTO personDTO, PersonDTO personToPatchDTO) {
+		personToPatchDTO = restTemplate
 				.exchange(buildUriComponent().path(PREFIX + "/{id}").buildAndExpand(pathParams).toUriString(),
-						HttpMethod.PATCH, new HttpEntity<>(personPatchDTO), PersonDTO.class)
+						HttpMethod.PATCH, new HttpEntity<>(personToPatchDTO), PersonDTO.class)
 				.getBody();
 
-		personDTO.setVersion(personPatchDTO.getVersion());
+		personDTO.setVersion(personToPatchDTO.getVersion());
 
 		log.debug("Person in screen     :{}", personDTO);
-		log.debug("Person coming in rest:{}", personPatchDTO);
+		log.debug("Person coming in rest:{}", personToPatchDTO);
 
-		assertTrue("No son iguales", EqualsBuilder.reflectionEquals(personPatchDTO, personDTO, false));
+		assertTrue("No son iguales", EqualsBuilder.reflectionEquals(personToPatchDTO, personDTO, false));
 	}
 
 	private UriComponentsBuilder buildUriComponent() {
