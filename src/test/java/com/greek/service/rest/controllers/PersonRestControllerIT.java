@@ -89,7 +89,7 @@ public class PersonRestControllerIT {
 		this.saveMinimalPerson();
 	}
 
-	@Test
+//	@Test
 	public void save_full_person_already_exists() {
 		log.debug("************************");
 		PersonDTO firstSave = this.saveFullPerson();
@@ -106,7 +106,7 @@ public class PersonRestControllerIT {
 		}
 	}
 
-//	@Test
+	@Test
 	public void patch_person_ok() throws Exception {
 		PersonDTO personDTO = saveFullPerson();
 
@@ -232,7 +232,7 @@ public class PersonRestControllerIT {
 		patchAndDoComparison(pathParams, personDTO, personPatchDTO);
 	}
 
-//	@Test
+	@Test
 	public void patch_person_nullify_ok() throws Exception {
 		PersonDTO personDTO = saveFullPerson();
 
@@ -351,7 +351,7 @@ public class PersonRestControllerIT {
 		patchAndDoComparison(pathParams, personDTO, personPatchDTO);
 	}
 
-//	@Test
+	@Test
 	public void post_invalid_combo_values() {
 		PersonDTO personDTO = ObjectsBuilderUtils.createFullPersonDTO(faker);
 		personDTO.setIdentityDocumentTypeId(8888L);
