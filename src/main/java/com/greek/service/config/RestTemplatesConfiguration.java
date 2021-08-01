@@ -15,6 +15,7 @@ import org.zalando.logbook.Logbook;
 import org.zalando.logbook.spring.LogbookClientHttpRequestInterceptor;
 
 import com.gvt.rest.http.client.LocaleHeaderInterceptor;
+import com.gvt.rest.http.client.LoggerInterceptor;
 import com.gvt.rest.web.client.CustomDefaultResponseErrorHandler;
 import com.gvt.security.http.client.AuthorizationHeaderInterceptor;
 
@@ -37,6 +38,7 @@ public class RestTemplatesConfiguration {
 		restTemplate.getInterceptors().add(new LocaleHeaderInterceptor());
 		restTemplate.getInterceptors().add(new AuthorizationHeaderInterceptor());
 		restTemplate.getInterceptors().add(new LogbookClientHttpRequestInterceptor(logbook));
+		restTemplate.getInterceptors().add(new LoggerInterceptor());
 
 		return restTemplate;
 	}

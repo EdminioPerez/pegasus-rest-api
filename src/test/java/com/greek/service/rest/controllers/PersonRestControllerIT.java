@@ -405,7 +405,7 @@ public class PersonRestControllerIT {
 
 	}
 
-//	@Test
+	@Test
 	public void post_dto_validations() {
 		PersonDTO personDTO = ObjectsBuilderUtils.createFullPersonDTO(faker);
 		personDTO.setBirthDate(new java.sql.Date(faker.date().future(10, TimeUnit.DAYS).getTime()).toLocalDate());
