@@ -109,5 +109,16 @@ output {
   	}
 }
 ```
-
+#### Value for logback
+```
+	<appender name="logstash" class="net.logstash.logback.appender.LogstashTcpSocketAppender">
+		<param name="Encoding" value="UTF-8" />
+		<destination>127.0.0.1:4560</destination>
+		<encoder class="net.logstash.logback.encoder.LogstashEncoder">
+			<includeMdcKeyName>correlationId</includeMdcKeyName>
+			<includeMdcKeyName>username</includeMdcKeyName>
+			<customFields>{"app_name":"pegasus-rest-api", "app_port": "YourPort"}</customFields>
+		</encoder>
+	</appender>
+```
 If you have ideas for releases in the future, please add them here.

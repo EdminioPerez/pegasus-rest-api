@@ -8,6 +8,7 @@ import java.time.Period;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
 import javax.validation.ValidationException;
@@ -26,6 +27,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.web.client.HttpClientErrorException;
@@ -40,6 +42,8 @@ import com.greek.service.RestServicesApplication;
 import com.greek.service.utils.ObjectsBuilderUtils;
 import com.gvt.core.exceptions.DataIntegrityException;
 import com.gvt.core.reflect.ReflectionUtils;
+import com.gvt.core.response.ErrorResponse;
+import com.gvt.rest.utils.ExceptionUtils;
 import com.gvt.security.SecurityConstants;
 import com.gvt.security.test.context.support.WithMockedUser;
 import com.gvt.security.test.utils.JwtTestUtils;
@@ -60,6 +64,9 @@ public class PersonRestControllerIT {
 	@Autowired
 	private RestTemplate restTemplate;
 
+	@Autowired
+	private MappingJackson2HttpMessageConverter mappingJackson2HttpMessageConverter;
+
 	private Faker faker = new Faker(new Locale("es", "ES"));
 	private UriComponentsBuilder uriComponents;
 	private HttpEntity<String> requestEntity;
@@ -75,21 +82,21 @@ public class PersonRestControllerIT {
 		requestEntity = new HttpEntity<>(requestHeaders);
 	}
 
-//	@Test
+	@Test
 	public void save_full_person() {
 		// The assertions are in the saveFullPerson
 		log.debug("************************");
 		this.saveFullPerson();
 	}
 
-//	@Test
+	@Test
 	public void save_minimal_person() {
 		// The assertions are in the saveMinimalPerson
 		log.debug("************************");
 		this.saveMinimalPerson();
 	}
 
-//	@Test
+	@Test
 	public void save_full_person_already_exists() {
 		log.debug("************************");
 		PersonDTO firstSave = this.saveFullPerson();
@@ -100,9 +107,14 @@ public class PersonRestControllerIT {
 
 			assertTrue(false);
 		} catch (HttpClientErrorException e) {
-			log.debug("Body of the error:{}", e.getResponseBodyAsString());
-			log.debug("Exception:{}", e);
-			assertEquals("error.person.already.exists.same.organization", e.getMessage());
+			Optional<ErrorResponse> errorResponse = ExceptionUtils.convertFromHttpClientErrorException(e,
+					mappingJackson2HttpMessageConverter.getObjectMapper());
+
+			if (errorResponse.isPresent()) {
+				assertEquals("error.person.already.exists.same.organization", errorResponse.get().getMessage());
+			} else {
+				assertTrue(false);
+			}
 		}
 	}
 
@@ -402,7 +414,87 @@ public class PersonRestControllerIT {
 		} catch (DataIntegrityException e) {
 			assertEquals("exception.geographic.location.not.exists", e.getMessageKey());
 		}
+	}
 
+	@Test
+	public void patch_invalid_combo_values() {
+		log.debug("*************************************************************************");
+
+		PersonDTO personDTO = saveFullPerson();
+
+		Map<String, String> pathParams = new HashMap<>();
+		pathParams.put("id", personDTO.getId().toString());
+
+		try {
+			PersonDTO personPatchDTO = new PersonDTO();
+			personPatchDTO.setIdentityDocumentTypeId(8888L);
+			patchAndDoComparison(pathParams, personDTO, personPatchDTO);
+
+			assertTrue(false);
+		} catch (DataIntegrityException e) {
+			assertEquals("exception.identity.document.type.not.exists", e.getMessageKey());
+		}
+
+		try {
+			PersonDTO personPatchDTO = new PersonDTO();
+			personPatchDTO.setPostalCodeId(888888L);
+			patchAndDoComparison(pathParams, personDTO, personPatchDTO);
+
+			assertTrue(false);
+		} catch (DataIntegrityException e) {
+			assertEquals("exception.postal.code.not.exists", e.getMessageKey());
+		}
+
+		try {
+			PersonDTO personPatchDTO = new PersonDTO();
+			personPatchDTO.setSexId(8888L);
+			patchAndDoComparison(pathParams, personDTO, personPatchDTO);
+
+			assertTrue(false);
+		} catch (DataIntegrityException e) {
+			assertEquals("exception.sex.not.exists", e.getMessageKey());
+		}
+
+		try {
+			PersonDTO personPatchDTO = new PersonDTO();
+			personPatchDTO.setBloodGroupId(8888L);
+			patchAndDoComparison(pathParams, personDTO, personPatchDTO);
+
+			assertTrue(false);
+		} catch (DataIntegrityException e) {
+			assertEquals("exception.blood.group.not.exists", e.getMessageKey());
+		}
+
+		try {
+			PersonDTO personPatchDTO = new PersonDTO();
+			personPatchDTO.setCountryBirthId(8888L);
+			patchAndDoComparison(pathParams, personDTO, personPatchDTO);
+
+			assertTrue(false);
+		} catch (DataIntegrityException e) {
+			assertEquals("exception.geographic.location.not.exists", e.getMessageKey());
+		}
+
+		try {
+			PersonDTO personPatchDTO = new PersonDTO();
+			personPatchDTO
+					.setBirthDate(new java.sql.Date(faker.date().future(10, TimeUnit.DAYS).getTime()).toLocalDate());
+			patchAndDoComparison(pathParams, personDTO, personPatchDTO);
+
+			assertTrue(false);
+		} catch (ValidationException e) {
+			assertEquals("error.validation.birthDate.Past", e.getMessage());
+		}
+
+		try {
+			PersonDTO personPatchDTO = new PersonDTO();
+			personPatchDTO.setAge(-200F);
+			patchAndDoComparison(pathParams, personDTO, personPatchDTO);
+
+			assertTrue(false);
+		} catch (ValidationException e) {
+			assertEquals("error.validation.age.Min", e.getMessage());
+		}
 	}
 
 	@Test
@@ -429,7 +521,7 @@ public class PersonRestControllerIT {
 
 	}
 
-//	@Test
+	@Test
 	public void post_integrity_data_based_on_jwt() {
 		PersonDTO personDTO = ObjectsBuilderUtils.createFullPersonDTO(faker);
 		personDTO.setIdentityDocumentTypeId(10L);
@@ -453,7 +545,7 @@ public class PersonRestControllerIT {
 
 	}
 
-//	@Test
+	@Test
 	public void patch_integrity_data_based_on_jwt() {
 		log.debug("*************************************************************************");
 
@@ -464,93 +556,22 @@ public class PersonRestControllerIT {
 
 		try {
 			PersonDTO personPatchDTO = new PersonDTO();
+			personPatchDTO.setIdentityDocumentTypeId(10L);
+			patchAndDoComparison(pathParams, personDTO, personPatchDTO);
+
+			assertTrue(false);
+		} catch (DataIntegrityException e) {
+			assertEquals("exception.identity.document.type.not.exists", e.getMessageKey());
+		}
+
+		try {
+			PersonDTO personPatchDTO = new PersonDTO();
 			personPatchDTO.setPostalCodeId(15000L);
 			patchAndDoComparison(pathParams, personDTO, personPatchDTO);
 
 			assertTrue(false);
 		} catch (DataIntegrityException e) {
 			assertEquals("exception.postal.code.not.exists", e.getMessageKey());
-		}
-	}
-
-//	@Test
-	public void patch_invalid_combo_values() {
-		log.debug("*************************************************************************");
-
-		PersonDTO personDTO = saveFullPerson();
-
-		Map<String, String> pathParams = new HashMap<>();
-		pathParams.put("id", personDTO.getId().toString());
-
-		try {
-			PersonDTO personPatchDTO = new PersonDTO();
-			personPatchDTO.setCountryBirthId(8888L);
-			patchAndDoComparison(pathParams, personDTO, personPatchDTO);
-
-			assertTrue(false);
-		} catch (DataIntegrityException e) {
-			assertEquals("exception.geographic.location.not.exists", e.getMessageKey());
-		}
-
-		try {
-			PersonDTO personPatchDTO = new PersonDTO();
-			personPatchDTO.setBloodGroupId(8888L);
-			patchAndDoComparison(pathParams, personDTO, personPatchDTO);
-
-			assertTrue(false);
-		} catch (DataIntegrityException e) {
-			assertEquals("exception.blood.group.not.exists", e.getMessageKey());
-		}
-
-		try {
-			PersonDTO personPatchDTO = new PersonDTO();
-			personPatchDTO.setSexId(8888L);
-			patchAndDoComparison(pathParams, personDTO, personPatchDTO);
-
-			assertTrue(false);
-		} catch (DataIntegrityException e) {
-			assertEquals("exception.sex.not.exists", e.getMessageKey());
-		}
-
-		try {
-			PersonDTO personPatchDTO = new PersonDTO();
-			personPatchDTO
-					.setBirthDate(new java.sql.Date(faker.date().future(10, TimeUnit.DAYS).getTime()).toLocalDate());
-			patchAndDoComparison(pathParams, personDTO, personPatchDTO);
-
-			assertTrue(false);
-		} catch (ValidationException e) {
-			assertEquals("error.validation.birthDate.Past", e.getMessage());
-		}
-
-		try {
-			PersonDTO personPatchDTO = new PersonDTO();
-			personPatchDTO.setAge(-200F);
-			patchAndDoComparison(pathParams, personDTO, personPatchDTO);
-
-			assertTrue(false);
-		} catch (ValidationException e) {
-			assertEquals("error.validation.age.Min", e.getMessage());
-		}
-
-		try {
-			PersonDTO personPatchDTO = new PersonDTO();
-			personPatchDTO.setPostalCodeId(888888L);
-			patchAndDoComparison(pathParams, personDTO, personPatchDTO);
-
-			assertTrue(false);
-		} catch (DataIntegrityException e) {
-			assertEquals("exception.postal.code.not.exists", e.getMessageKey());
-		}
-
-		try {
-			PersonDTO personPatchDTO = new PersonDTO();
-			personPatchDTO.setIdentityDocumentTypeId(8888L);
-			patchAndDoComparison(pathParams, personDTO, personPatchDTO);
-
-			assertTrue(false);
-		} catch (DataIntegrityException e) {
-			assertEquals("exception.identity.document.type.not.exists", e.getMessageKey());
 		}
 	}
 
