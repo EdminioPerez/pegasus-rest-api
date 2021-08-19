@@ -36,16 +36,21 @@ public class LocalImagesResourceHandler implements ImagesResourceHandler {
 			throw new IllegalArgumentException("File can't be null");
 		}
 
-		Path folder = Paths.get(resourcesDirectory);
-		String filename = FilenameUtils.getBaseName(file.getOriginalFilename());
-		String extension = FilenameUtils.getExtension(file.getOriginalFilename());
-		Path filePath = Files.createTempFile(folder, filename + "-", "." + extension);
+		var filePath = buildFilePath(file);
 
-		try (InputStream input = file.getInputStream()) {
+		try (var input = file.getInputStream()) {
 			Files.copy(input, filePath, StandardCopyOption.REPLACE_EXISTING);
 		}
 
 		return filePath.getFileName().toString();
+	}
+
+	private Path buildFilePath(MultipartFile file) throws IOException {
+		var folder = Paths.get(resourcesDirectory);
+		String filename = FilenameUtils.getBaseName(file.getOriginalFilename());
+		String extension = FilenameUtils.getExtension(file.getOriginalFilename());
+
+		return Files.createTempFile(folder, filename + "-", "." + extension);
 	}
 
 }
