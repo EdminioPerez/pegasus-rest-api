@@ -1,11 +1,5 @@
+/* AssentSoftware (C)2021 */
 package com.greek.service.mappers;
-
-import java.util.List;
-
-import org.mapstruct.IterableMapping;
-import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
-import org.mapstruct.Named;
 
 import com.greek.commons.dto.v1.simple.SimpleDto;
 import com.greek.main.hibernate.model.CodigoPostal;
@@ -15,111 +9,111 @@ import com.greek.main.hibernate.model.Sexo;
 import com.greek.main.hibernate.model.TipoDocumentoIdentificacion;
 import com.greek.main.hibernate.model.TipoSangre;
 import com.greek.main.hibernate.model.UbicacionGeografica;
+import java.util.List;
+import org.mapstruct.IterableMapping;
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
+import org.mapstruct.Named;
 
 @Mapper(componentModel = "spring")
 public interface SimpleDomainMapper {
 
-	/** ---------- BloodGroup Mapping ---------- **/
+    /** ---------- BloodGroup Mapping ---------- * */
+    @Named(value = "bloodGroupNormalMapping")
+    @Mapping(source = "codigoTipoSangre", target = "code")
+    @Mapping(source = "nombreTipoSangre", target = "description")
+    @Mapping(target = "version", ignore = true)
+    SimpleDto fromBloodGroupToDto(TipoSangre tipoSangre);
 
-	@Named(value = "bloodGroupNormalMapping")
-	@Mapping(source = "codigoTipoSangre", target = "code")
-	@Mapping(source = "nombreTipoSangre", target = "description")
-	@Mapping(target = "version", ignore = true)
-	SimpleDto fromBloodGroupToDto(TipoSangre tipoSangre);
+    @Mapping(source = "codigoTipoSangre", target = "code")
+    @Mapping(source = "nombreTipoSangre", target = "description")
+    SimpleDto fromBloodGroupToFullDto(TipoSangre tipoSangre);
 
-	@Mapping(source = "codigoTipoSangre", target = "code")
-	@Mapping(source = "nombreTipoSangre", target = "description")
-	SimpleDto fromBloodGroupToFullDto(TipoSangre tipoSangre);
+    @IterableMapping(qualifiedByName = "bloodGroupNormalMapping")
+    List<SimpleDto> fromBloodGroupToDtos(List<TipoSangre> tiposSangre);
 
-	@IterableMapping(qualifiedByName = "bloodGroupNormalMapping")
-	List<SimpleDto> fromBloodGroupToDtos(List<TipoSangre> tiposSangre);
+    /** ---------- Sex Mapping ---------- * */
+    @Named(value = "sexNormalMapping")
+    @Mapping(source = "codigoSexo", target = "code")
+    @Mapping(source = "nombreSexo", target = "description")
+    @Mapping(target = "version", ignore = true)
+    SimpleDto fromSexToDto(Sexo sexo);
 
-	/** ---------- Sex Mapping ---------- **/
+    @Mapping(source = "codigoSexo", target = "code")
+    @Mapping(source = "nombreSexo", target = "description")
+    SimpleDto fromSexToFullDto(Sexo sexo);
 
-	@Named(value = "sexNormalMapping")
-	@Mapping(source = "codigoSexo", target = "code")
-	@Mapping(source = "nombreSexo", target = "description")
-	@Mapping(target = "version", ignore = true)
-	SimpleDto fromSexToDto(Sexo sexo);
+    @IterableMapping(qualifiedByName = "sexNormalMapping")
+    List<SimpleDto> fromSexToDtos(List<Sexo> sexo);
 
-	@Mapping(source = "codigoSexo", target = "code")
-	@Mapping(source = "nombreSexo", target = "description")
-	SimpleDto fromSexToFullDto(Sexo sexo);
+    /** ---------- Province Mapping ---------- * */
+    @Named(value = "provinceNormalMapping")
+    @Mapping(source = "codigoProvincia", target = "code")
+    @Mapping(source = "nombreProvincia", target = "description")
+    @Mapping(target = "version", ignore = true)
+    SimpleDto fromProvinceToDto(Provincia provincia);
 
-	@IterableMapping(qualifiedByName = "sexNormalMapping")
-	List<SimpleDto> fromSexToDtos(List<Sexo> sexo);
+    @Mapping(source = "codigoProvincia", target = "code")
+    @Mapping(source = "nombreProvincia", target = "description")
+    SimpleDto fromProvinceToFullDto(Provincia provincia);
 
-	/** ---------- Province Mapping ---------- **/
+    @IterableMapping(qualifiedByName = "provinceNormalMapping")
+    List<SimpleDto> fromProvinceToDtos(List<Provincia> provincias);
 
-	@Named(value = "provinceNormalMapping")
-	@Mapping(source = "codigoProvincia", target = "code")
-	@Mapping(source = "nombreProvincia", target = "description")
-	@Mapping(target = "version", ignore = true)
-	SimpleDto fromProvinceToDto(Provincia provincia);
+    /** ---------- Municipality Mapping ---------- * */
+    @Named(value = "municipalityNormalMapping")
+    @Mapping(source = "codigoPoblacion", target = "code")
+    @Mapping(source = "nombrePoblacion", target = "description")
+    @Mapping(target = "version", ignore = true)
+    SimpleDto fromMunicipalityToDto(Poblacion poblacion);
 
-	@Mapping(source = "codigoProvincia", target = "code")
-	@Mapping(source = "nombreProvincia", target = "description")
-	SimpleDto fromProvinceToFullDto(Provincia provincia);
+    @Mapping(source = "codigoPoblacion", target = "code")
+    @Mapping(source = "nombrePoblacion", target = "description")
+    SimpleDto fromMunicipalityToFullDto(Poblacion poblacion);
 
-	@IterableMapping(qualifiedByName = "provinceNormalMapping")
-	List<SimpleDto> fromProvinceToDtos(List<Provincia> provincias);
+    @IterableMapping(qualifiedByName = "municipalityNormalMapping")
+    List<SimpleDto> fromMunicipalityToDtos(List<Poblacion> poblaciones);
 
-	/** ---------- Municipality Mapping ---------- **/
+    /** ---------- Postal codes Mapping ---------- * */
+    @Named(value = "postalCodeNormalMapping")
+    @Mapping(source = "codigoPostal", target = "code")
+    @Mapping(target = "version", ignore = true)
+    SimpleDto fromPostalCodeToDto(CodigoPostal codigoPostal);
 
-	@Named(value = "municipalityNormalMapping")
-	@Mapping(source = "codigoPoblacion", target = "code")
-	@Mapping(source = "nombrePoblacion", target = "description")
-	@Mapping(target = "version", ignore = true)
-	SimpleDto fromMunicipalityToDto(Poblacion poblacion);
+    @Mapping(source = "codigoPostal", target = "code")
+    SimpleDto fromPostalCodeToFullDto(CodigoPostal codigoPostal);
 
-	@Mapping(source = "codigoPoblacion", target = "code")
-	@Mapping(source = "nombrePoblacion", target = "description")
-	SimpleDto fromMunicipalityToFullDto(Poblacion poblacion);
+    @IterableMapping(qualifiedByName = "postalCodeNormalMapping")
+    List<SimpleDto> fromPostalCodesToDtos(List<CodigoPostal> codigosPostales);
 
-	@IterableMapping(qualifiedByName = "municipalityNormalMapping")
-	List<SimpleDto> fromMunicipalityToDtos(List<Poblacion> poblaciones);
+    /** ---------- Identity documents types Mapping ---------- * */
+    @Named(value = "identityDocumentsTypesNormalMapping")
+    @Mapping(source = "codigoTipoDocumentoIdentificacion", target = "code")
+    @Mapping(source = "nombreTipoDocumentoIdentificacion", target = "description")
+    @Mapping(target = "version", ignore = true)
+    SimpleDto fromIdentityDocumentsTypesToDto(
+            TipoDocumentoIdentificacion tipoDocumentoIdentificacion);
 
-	/** ---------- Postal codes Mapping ---------- **/
+    @Mapping(source = "codigoTipoDocumentoIdentificacion", target = "code")
+    @Mapping(source = "nombreTipoDocumentoIdentificacion", target = "description")
+    SimpleDto fromIdentityDocumentsTypesToFullDto(
+            TipoDocumentoIdentificacion tipoDocumentoIdentificacion);
 
-	@Named(value = "postalCodeNormalMapping")
-	@Mapping(source = "codigoPostal", target = "code")
-	@Mapping(target = "version", ignore = true)
-	SimpleDto fromPostalCodeToDto(CodigoPostal codigoPostal);
+    @IterableMapping(qualifiedByName = "identityDocumentsTypesNormalMapping")
+    List<SimpleDto> fromIdentityDocumentsTypesToDtos(
+            List<TipoDocumentoIdentificacion> tiposDocumentosIdentificacion);
 
-	@Mapping(source = "codigoPostal", target = "code")
-	SimpleDto fromPostalCodeToFullDto(CodigoPostal codigoPostal);
+    /** ---------- GeographicLocation Mapping ---------- * */
+    @Named(value = "geographicLocationNormalMapping")
+    @Mapping(source = "codigoUbicacionGeografica", target = "code")
+    @Mapping(source = "nombreUbicacionGeografica", target = "description")
+    @Mapping(target = "version", ignore = true)
+    SimpleDto fromGeographicLocationToDto(UbicacionGeografica ubicacionGeografica);
 
-	@IterableMapping(qualifiedByName = "postalCodeNormalMapping")
-	List<SimpleDto> fromPostalCodesToDtos(List<CodigoPostal> codigosPostales);
+    @Mapping(source = "codigoUbicacionGeografica", target = "code")
+    @Mapping(source = "nombreUbicacionGeografica", target = "description")
+    SimpleDto fromGeographicLocationToFullDto(UbicacionGeografica ubicacionGeografica);
 
-	/** ---------- Identity documents types Mapping ---------- **/
-
-	@Named(value = "identityDocumentsTypesNormalMapping")
-	@Mapping(source = "codigoTipoDocumentoIdentificacion", target = "code")
-	@Mapping(source = "nombreTipoDocumentoIdentificacion", target = "description")
-	@Mapping(target = "version", ignore = true)
-	SimpleDto fromIdentityDocumentsTypesToDto(TipoDocumentoIdentificacion tipoDocumentoIdentificacion);
-
-	@Mapping(source = "codigoTipoDocumentoIdentificacion", target = "code")
-	@Mapping(source = "nombreTipoDocumentoIdentificacion", target = "description")
-	SimpleDto fromIdentityDocumentsTypesToFullDto(TipoDocumentoIdentificacion tipoDocumentoIdentificacion);
-
-	@IterableMapping(qualifiedByName = "identityDocumentsTypesNormalMapping")
-	List<SimpleDto> fromIdentityDocumentsTypesToDtos(List<TipoDocumentoIdentificacion> tiposDocumentosIdentificacion);
-
-	/** ---------- GeographicLocation Mapping ---------- **/
-
-	@Named(value = "geographicLocationNormalMapping")
-	@Mapping(source = "codigoUbicacionGeografica", target = "code")
-	@Mapping(source = "nombreUbicacionGeografica", target = "description")
-	@Mapping(target = "version", ignore = true)
-	SimpleDto fromGeographicLocationToDto(UbicacionGeografica ubicacionGeografica);
-
-	@Mapping(source = "codigoUbicacionGeografica", target = "code")
-	@Mapping(source = "nombreUbicacionGeografica", target = "description")
-	SimpleDto fromGeographicLocationToFullDto(UbicacionGeografica ubicacionGeografica);
-
-	@IterableMapping(qualifiedByName = "geographicLocationNormalMapping")
-	List<SimpleDto> fromGeographicLocationToDtos(List<UbicacionGeografica> ubicacionGeografica);
-
+    @IterableMapping(qualifiedByName = "geographicLocationNormalMapping")
+    List<SimpleDto> fromGeographicLocationToDtos(List<UbicacionGeografica> ubicacionGeografica);
 }

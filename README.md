@@ -49,7 +49,7 @@ Go to **com.greek.service.manager.impl.UserServiceLayerIT** class and:
 - Check the table **persona** and you will have the person data related to this user
 - Check the table **persona_organizacion** and you will have the person linked to this group previously created
 
-Enter into target directory and run the resultant jar with the command: 
+Enter into target directory and run the resultant jar with the command:
 ```sh
 $ java -jar <name of the jar>
 ```
@@ -60,7 +60,7 @@ If you are using linux OS, you have the utility script for compiling, packaging 
 ```sh
 $ ./createDocker.sh
 ```
-Refer to the content of this file to know the manual steps for dockerization 
+Refer to the content of this file to know the manual steps for dockerization
 
 ## Tools
 ### Swagger
@@ -75,7 +75,7 @@ Example:
 http://localhost:9191/actuator/health
 http://localhost:9191/actuator/info
 
-Simon console is for monitoring response times of every endpoint, and 
+Simon console is for monitoring response times of every endpoint, and
 you can find it in http[s]://[host]:[port]/performance-monitor/index.html
 
 Example
@@ -103,10 +103,10 @@ input {
 	}
 }
 output {
- 	elasticsearch {
+	elasticsearch {
 		hosts => ["http://192.168.0.104:9200"]
 		index => "logs-%{+YYYY.MM.dd}"
-  	}
+	}
 }
 ```
 #### Value for logback

@@ -1,6 +1,5 @@
+/* AssentSoftware (C)2021 */
 package com.greek.service.manager;
-
-import java.util.List;
 
 import com.greek.main.hibernate.model.CodigoPostal;
 import com.greek.main.hibernate.model.Poblacion;
@@ -9,23 +8,23 @@ import com.greek.main.hibernate.model.Sexo;
 import com.greek.main.hibernate.model.TipoDocumentoIdentificacion;
 import com.greek.main.hibernate.model.TipoSangre;
 import com.greek.main.hibernate.model.UbicacionGeografica;
+import java.util.List;
 
 public interface SimpleDomainService {
 
-	List<TipoSangre> findBloodGroups();
+    List<TipoSangre> findBloodGroups();
 
-	List<Sexo> findSex();
+    List<Sexo> findSex();
 
-	List<Provincia> findProvinces();
+    List<Provincia> findProvinces();
 
-	List<Poblacion> findMunicipalities(Long provinceId);
+    List<Poblacion> findMunicipalities(Long provinceId);
 
-	List<CodigoPostal> findPostalCodes(Long provinceId, Long municipialityId);
+    List<CodigoPostal> findPostalCodes(Long provinceId, Long municipialityId);
 
-	CodigoPostal findPostalCodeById(Long id);
+    CodigoPostal findPostalCodeById(Long id);
 
-	List<TipoDocumentoIdentificacion> findIdentityDocumentsTypeByCountry();
+    List<TipoDocumentoIdentificacion> findIdentityDocumentsTypeByCountry();
 
-	List<UbicacionGeografica> findAllGeographicLocations();
-
+    List<UbicacionGeografica> findAllGeographicLocations();
 }

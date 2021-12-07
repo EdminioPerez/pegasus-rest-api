@@ -1,12 +1,5 @@
+/* AssentSoftware (C)2021 */
 package com.greek.service.manager.impl;
-
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Locale;
-
-import org.apache.commons.lang3.StringUtils;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import com.greek.commons.dto.v1.user.ClientDto;
 import com.greek.commons.dto.v1.user.SystemUserDto;
@@ -30,9 +23,14 @@ import com.greek.service.repositories.UserRepository;
 import com.greek.service.repositories.UserRoleRepository;
 import com.gvt.core.exceptions.LogicException;
 import com.gvt.rest.context.i18n.Translator;
-
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Locale;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @Transactional(readOnly = true)
@@ -40,201 +38,205 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
 
-	private final PersonService personService;
-	private final UserRepository userRepository;
-	private final OrganizationRepository organizationRepository;
-	private final UserOrganizationRepository userOrganizationRepository;
-	private final UserRoleRepository userRolRepository;
-	private final Translator translator;
+    private final PersonService personService;
+    private final UserRepository userRepository;
+    private final OrganizationRepository organizationRepository;
+    private final UserOrganizationRepository userOrganizationRepository;
+    private final UserRoleRepository userRolRepository;
+    private final Translator translator;
 
-//	public UserServiceImpl(UserRepository userRepository, OrganizationRepository organizationRepository,
-//			UserOrganizationRepository userOrganizationRepository, UserRoleRepository userRolRepository,
-//			PersonService personService, Translator translator) {
-//		this.userRepository = userRepository;
-//		this.organizationRepository = organizationRepository;
-//		this.personService = personService;
-//		this.userOrganizationRepository = userOrganizationRepository;
-//		this.userRolRepository = userRolRepository;
-//	}
+    //	public UserServiceImpl(UserRepository userRepository, OrganizationRepository
+    // organizationRepository,
+    //			UserOrganizationRepository userOrganizationRepository, UserRoleRepository
+    // userRolRepository,
+    //			PersonService personService, Translator translator) {
+    //		this.userRepository = userRepository;
+    //		this.organizationRepository = organizationRepository;
+    //		this.personService = personService;
+    //		this.userOrganizationRepository = userOrganizationRepository;
+    //		this.userRolRepository = userRolRepository;
+    //	}
 
-	@Override
-	@Transactional(readOnly = false)
-	public List<Organizacion> createUser(SystemUserDto systemUser, ClientDto client, Long countryId, Locale locale) {
-		// Se configura el pais de registro y el idioma
-		UbicacionGeografica pais = new UbicacionGeografica();
-		pais.setId(countryId);
+    @Override
+    @Transactional(readOnly = false)
+    public List<Organizacion> createUser(
+            SystemUserDto systemUser, ClientDto client, Long countryId, Locale locale) {
+        // Se configura el pais de registro y el idioma
+        UbicacionGeografica pais = new UbicacionGeografica();
+        pais.setId(countryId);
 
-		// Se configuran primero las organizaciones
-		Organizacion grupo = new Organizacion();
-		Organizacion organizacion = new Organizacion();
-		Organizacion sede = new Organizacion();
+        // Se configuran primero las organizaciones
+        Organizacion grupo = new Organizacion();
+        Organizacion organizacion = new Organizacion();
+        Organizacion sede = new Organizacion();
 
-		List<Organizacion> retValue = new LinkedList<>();
-		retValue.add(grupo);
-		retValue.add(organizacion);
-		retValue.add(sede);
+        List<Organizacion> retValue = new LinkedList<>();
+        retValue.add(grupo);
+        retValue.add(organizacion);
+        retValue.add(sede);
 
-		String[] rifs = builtRifsForOrganizations(systemUser, client);
-		grupo.setRifOrganizacion(rifs[0]);
-		organizacion.setRifOrganizacion(rifs[1]);
-		sede.setRifOrganizacion(rifs[2]);
+        String[] rifs = builtRifsForOrganizations(systemUser, client);
+        grupo.setRifOrganizacion(rifs[0]);
+        organizacion.setRifOrganizacion(rifs[1]);
+        sede.setRifOrganizacion(rifs[2]);
 
-		OpcionSino opcionSinoByEsHabilitado = new OpcionSino();
-		opcionSinoByEsHabilitado.setId(1l);
+        OpcionSino opcionSinoByEsHabilitado = new OpcionSino();
+        opcionSinoByEsHabilitado.setId(1l);
 
-		OpcionSino opcionSinoByEsConfiguradoPapeleria = new OpcionSino();
-		opcionSinoByEsConfiguradoPapeleria.setId(2l);
+        OpcionSino opcionSinoByEsConfiguradoPapeleria = new OpcionSino();
+        opcionSinoByEsConfiguradoPapeleria.setId(2l);
 
-		grupo.setRazonOrganizacion(client.getRazonSocial() + "-G");
-		grupo.setOpcionSinoByEsHabilitado(opcionSinoByEsHabilitado);
-		grupo.setMaxOrganizacionesPorGrupo(5);
-		grupo.setMaxSedesPorOrganizacion(3);
-		organizacion.setRazonOrganizacion(client.getRazonSocial());
-		organizacion.setOrganizacion(grupo);
-		organizacion.setOpcionSinoByEsHabilitado(opcionSinoByEsHabilitado);
-		sede.setRazonOrganizacion("Sede 1");
-		sede.setOrganizacion(organizacion);
-		sede.setOpcionSinoByEsHabilitado(opcionSinoByEsHabilitado);
-		sede.setFormatoCabecera(translator.toLocale("reporte.header.default", locale));
-		sede.setFormatoPiePagina(translator.toLocale("reporte.footer.default", locale));
+        grupo.setRazonOrganizacion(client.getRazonSocial() + "-G");
+        grupo.setOpcionSinoByEsHabilitado(opcionSinoByEsHabilitado);
+        grupo.setMaxOrganizacionesPorGrupo(5);
+        grupo.setMaxSedesPorOrganizacion(3);
+        organizacion.setRazonOrganizacion(client.getRazonSocial());
+        organizacion.setOrganizacion(grupo);
+        organizacion.setOpcionSinoByEsHabilitado(opcionSinoByEsHabilitado);
+        sede.setRazonOrganizacion("Sede 1");
+        sede.setOrganizacion(organizacion);
+        sede.setOpcionSinoByEsHabilitado(opcionSinoByEsHabilitado);
+        sede.setFormatoCabecera(translator.toLocale("reporte.header.default", locale));
+        sede.setFormatoPiePagina(translator.toLocale("reporte.footer.default", locale));
 
-		log.trace("Looking up for a organization with RIF:{}", organizacion.getRifOrganizacion());
-		if (organizationRepository.findByRifOrganizacion(organizacion.getRifOrganizacion()) != null) {
-			throw new LogicException("Organization already exists", "error.organization.already.exists");
-		}
+        log.trace("Looking up for a organization with RIF:{}", organizacion.getRifOrganizacion());
+        if (organizationRepository.findByRifOrganizacion(organizacion.getRifOrganizacion())
+                != null) {
+            throw new LogicException(
+                    "Organization already exists", "error.organization.already.exists");
+        }
 
-		organizationRepository.save(grupo);
-		organizationRepository.save(organizacion);
-		organizationRepository.save(sede);
+        organizationRepository.save(grupo);
+        organizationRepository.save(organizacion);
+        organizationRepository.save(sede);
 
-		// Se configura el usuario
-		Usuario usuario = new Usuario();
-		usuario.setCodigoUsuario(systemUser.getEmail());
-		usuario.setPasswordUsuario(systemUser.getContrasena());
-		sede.setFormatoCabecera(translator.toLocale("reporte.firma.default", locale));
+        // Se configura el usuario
+        Usuario usuario = new Usuario();
+        usuario.setCodigoUsuario(systemUser.getEmail());
+        usuario.setPasswordUsuario(systemUser.getContrasena());
+        sede.setFormatoCabecera(translator.toLocale("reporte.firma.default", locale));
 
-		// Se habilita la cuenta
-		OpcionSino opcionSinoByEsActiva = new OpcionSino();
-		opcionSinoByEsActiva.setId(1L);
-		usuario.setOpcionSinoByEsActiva(opcionSinoByEsActiva);
+        // Se habilita la cuenta
+        OpcionSino opcionSinoByEsActiva = new OpcionSino();
+        opcionSinoByEsActiva.setId(1L);
+        usuario.setOpcionSinoByEsActiva(opcionSinoByEsActiva);
 
-		OpcionSino opcionSinoByEsCuentaExpirada = new OpcionSino();
-		opcionSinoByEsCuentaExpirada.setId(2L);
-		usuario.setOpcionSinoByEsCuentaExpirada(opcionSinoByEsCuentaExpirada);
+        OpcionSino opcionSinoByEsCuentaExpirada = new OpcionSino();
+        opcionSinoByEsCuentaExpirada.setId(2L);
+        usuario.setOpcionSinoByEsCuentaExpirada(opcionSinoByEsCuentaExpirada);
 
-		OpcionSino opcionSinoByEsCuentaBloqueada = new OpcionSino();
-		opcionSinoByEsCuentaBloqueada.setId(2L);
-		usuario.setOpcionSinoByEsCuentaBloqueada(opcionSinoByEsCuentaBloqueada);
+        OpcionSino opcionSinoByEsCuentaBloqueada = new OpcionSino();
+        opcionSinoByEsCuentaBloqueada.setId(2L);
+        usuario.setOpcionSinoByEsCuentaBloqueada(opcionSinoByEsCuentaBloqueada);
 
-		OpcionSino opcionSinoByEsCredencialesExpiradas = new OpcionSino();
-		opcionSinoByEsCredencialesExpiradas.setId(2L);
-		usuario.setOpcionSinoByEsCredencialesExpiradas(opcionSinoByEsCredencialesExpiradas);
+        OpcionSino opcionSinoByEsCredencialesExpiradas = new OpcionSino();
+        opcionSinoByEsCredencialesExpiradas.setId(2L);
+        usuario.setOpcionSinoByEsCredencialesExpiradas(opcionSinoByEsCredencialesExpiradas);
 
-		userRepository.save(usuario);
+        userRepository.save(usuario);
 
-		// Se configura al usuario como una persona de tipo doctor
-		Persona doctor = new Persona();
-		doctor.setApellidoPersona(systemUser.getApellidos());
-		doctor.setNombrePersona(systemUser.getNombres());
-		doctor.setCedulaPersona(client.getCedula());
-		doctor.setEMailPersona(systemUser.getEmail());
-		doctor.setTelefonoFijoPersona(systemUser.getTelefono());
-		doctor.setDireccionPersona(client.getDireccion());
-		doctor.setUbicacionGeograficaByIdPais(pais);
+        // Se configura al usuario como una persona de tipo doctor
+        Persona doctor = new Persona();
+        doctor.setApellidoPersona(systemUser.getApellidos());
+        doctor.setNombrePersona(systemUser.getNombres());
+        doctor.setCedulaPersona(client.getCedula());
+        doctor.setEMailPersona(systemUser.getEmail());
+        doctor.setTelefonoFijoPersona(systemUser.getTelefono());
+        doctor.setDireccionPersona(client.getDireccion());
+        doctor.setUbicacionGeograficaByIdPais(pais);
 
-		CategoriaPersona categoriaPersona = new CategoriaPersona();
-		categoriaPersona.setId(CategoriaPersonaEnum.DOCTOR.getIdCategoriaPersona());
+        CategoriaPersona categoriaPersona = new CategoriaPersona();
+        categoriaPersona.setId(CategoriaPersonaEnum.DOCTOR.getIdCategoriaPersona());
 
-		TipoDocumentoIdentificacion documentoIdentificacion = new TipoDocumentoIdentificacion();
-		documentoIdentificacion.setId(2L);
-		doctor.setTipoDocumentoIdentificacion(documentoIdentificacion);
+        TipoDocumentoIdentificacion documentoIdentificacion = new TipoDocumentoIdentificacion();
+        documentoIdentificacion.setId(2L);
+        doctor.setTipoDocumentoIdentificacion(documentoIdentificacion);
 
-		CodigoPostal codigoPostal = new CodigoPostal();
-		codigoPostal.setId(1L);
-		doctor.setCodigoPostal(codigoPostal);
+        CodigoPostal codigoPostal = new CodigoPostal();
+        codigoPostal.setId(1L);
+        doctor.setCodigoPostal(codigoPostal);
 
-		personService.saveWithOrganizationId(doctor, categoriaPersona, grupo);
+        personService.saveWithOrganizationId(doctor, categoriaPersona, grupo);
 
-		// Se enlaza al doctor con el usuario
-		UsuarioOrganizacion usuarioOrganizacion = new UsuarioOrganizacion();
-		usuarioOrganizacion.setOrganizacionByIdOrganizacion(organizacion);
-		usuarioOrganizacion.setOrganizacionByIdSede(sede);
-		usuarioOrganizacion.setPersona(doctor);
-		usuarioOrganizacion.setUsuario(usuario);
+        // Se enlaza al doctor con el usuario
+        UsuarioOrganizacion usuarioOrganizacion = new UsuarioOrganizacion();
+        usuarioOrganizacion.setOrganizacionByIdOrganizacion(organizacion);
+        usuarioOrganizacion.setOrganizacionByIdSede(sede);
+        usuarioOrganizacion.setPersona(doctor);
+        usuarioOrganizacion.setUsuario(usuario);
 
-		userOrganizationRepository.save(usuarioOrganizacion);
+        userOrganizationRepository.save(usuarioOrganizacion);
 
-		// Se enlaza el rol con el usuario
-		Rol rol = new Rol();
-		RolUsuario rolUsuario = new RolUsuario();
+        // Se enlaza el rol con el usuario
+        Rol rol = new Rol();
+        RolUsuario rolUsuario = new RolUsuario();
 
-		if (systemUser.getIdProfesion() != null) {
-			switch (systemUser.getIdProfesion().intValue()) {
-			case 1:
-				rol.setId(101L);
-				break;
-			case 53:
-				rol.setId(104L);
-				break;
-			case 54:
-				rol.setId(102L);
-				break;
-			case 55:
-				rol.setId(100L);
-				break;
-			case 56:
-				rol.setId(105L);
-				break;
-			case 57:
-				rol.setId(103L);
-				break;
-			default:
-				rol.setId(200L);
-				break;
-			}
-		} else {
-			rol.setId(50L);
-		}
+        if (systemUser.getIdProfesion() != null) {
+            switch (systemUser.getIdProfesion().intValue()) {
+                case 1:
+                    rol.setId(101L);
+                    break;
+                case 53:
+                    rol.setId(104L);
+                    break;
+                case 54:
+                    rol.setId(102L);
+                    break;
+                case 55:
+                    rol.setId(100L);
+                    break;
+                case 56:
+                    rol.setId(105L);
+                    break;
+                case 57:
+                    rol.setId(103L);
+                    break;
+                default:
+                    rol.setId(200L);
+                    break;
+            }
+        } else {
+            rol.setId(50L);
+        }
 
-		rolUsuario.setUsuario(usuario);
-		rolUsuario.setRol(rol);
-		userRolRepository.save(rolUsuario);
+        rolUsuario.setUsuario(usuario);
+        rolUsuario.setRol(rol);
+        userRolRepository.save(rolUsuario);
 
-//		// Añadir rol de permitir agregar paciente
-//		rol = new Rol();
-//		rolUsuario = new RolUsuario();
-//
-//		rol.setId(50L);
-//		rolUsuario.setUsuario(usuario);
-//		rolUsuario.setRol(rol);
-//		userRolRepository.save(rolUsuario);
+        //		// Añadir rol de permitir agregar paciente
+        //		rol = new Rol();
+        //		rolUsuario = new RolUsuario();
+        //
+        //		rol.setId(50L);
+        //		rolUsuario.setUsuario(usuario);
+        //		rolUsuario.setRol(rol);
+        //		userRolRepository.save(rolUsuario);
 
-		return retValue;
-	}
+        return retValue;
+    }
 
-	@Override
-	public String[] builtRifsForOrganizations(SystemUserDto systemUser, ClientDto client) {
-		String rifGrupo;
-		String rifOrganizacion;
-		String rifSede;
+    @Override
+    public String[] builtRifsForOrganizations(SystemUserDto systemUser, ClientDto client) {
+        String rifGrupo;
+        String rifOrganizacion;
+        String rifSede;
 
-		if (StringUtils.isNotBlank(client.getRif())) {
-			rifGrupo = client.getRif() + "G";
-			rifOrganizacion = client.getRif();
-			rifSede = client.getRif() + "S";
-		} else {
-			if (StringUtils.startsWith(client.getCedula(), "Temp-")) {
-				rifGrupo = StringUtils.left(systemUser.getIdValidation(), 15) + "G";
-				rifOrganizacion = StringUtils.left(systemUser.getIdValidation(), 16);
-				rifSede = StringUtils.left(systemUser.getIdValidation(), 15) + "S";
-			} else {
-				rifGrupo = StringUtils.left(client.getCedula(), 15) + "G";
-				rifOrganizacion = client.getCedula();
-				rifSede = StringUtils.left(client.getCedula(), 15) + "S";
-			}
-		}
+        if (StringUtils.isNotBlank(client.getRif())) {
+            rifGrupo = client.getRif() + "G";
+            rifOrganizacion = client.getRif();
+            rifSede = client.getRif() + "S";
+        } else {
+            if (StringUtils.startsWith(client.getCedula(), "Temp-")) {
+                rifGrupo = StringUtils.left(systemUser.getIdValidation(), 15) + "G";
+                rifOrganizacion = StringUtils.left(systemUser.getIdValidation(), 16);
+                rifSede = StringUtils.left(systemUser.getIdValidation(), 15) + "S";
+            } else {
+                rifGrupo = StringUtils.left(client.getCedula(), 15) + "G";
+                rifOrganizacion = client.getCedula();
+                rifSede = StringUtils.left(client.getCedula(), 15) + "S";
+            }
+        }
 
-		return new String[] { rifGrupo, rifOrganizacion, rifSede };
-	}
-
+        return new String[] {rifGrupo, rifOrganizacion, rifSede};
+    }
 }

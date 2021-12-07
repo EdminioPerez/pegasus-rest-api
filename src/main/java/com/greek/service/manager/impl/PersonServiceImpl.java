@@ -1,17 +1,5 @@
+/* AssentSoftware (C)2021 */
 package com.greek.service.manager.impl;
-
-import java.time.LocalDate;
-import java.util.List;
-import java.util.Map.Entry;
-import java.util.Optional;
-
-import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.exception.ExceptionUtils;
-import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import com.greek.main.hibernate.model.CategoriaPersona;
 import com.greek.main.hibernate.model.CodigoPostal;
@@ -30,9 +18,19 @@ import com.greek.service.repositories.PersonOrganizationRepository;
 import com.greek.service.repositories.PersonRepository;
 import com.greek.service.repositories.PostalCodesRepository;
 import com.greek.service.security.utils.AuthenticationUtils;
-
+import java.time.LocalDate;
+import java.util.List;
+import java.util.Map.Entry;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.exception.ExceptionUtils;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @Transactional(readOnly = true)
@@ -40,147 +38,186 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class PersonServiceImpl implements PersonService {
 
-	private final OrganizationService organizationService;
-	private final PersonRepository personRepository;
-	private final PersonOrganizationRepository personOrganizationRepository;
-	private final IdentityDocumentTypeRepository identityDocumentTypeRepository;
-	private final PostalCodesRepository postalCodesRepository;
-	private final CustomConstraintNameResolver defaultConstraintNameResolver;
+    private final OrganizationService organizationService;
+    private final PersonRepository personRepository;
+    private final PersonOrganizationRepository personOrganizationRepository;
+    private final IdentityDocumentTypeRepository identityDocumentTypeRepository;
+    private final PostalCodesRepository postalCodesRepository;
+    private final CustomConstraintNameResolver defaultConstraintNameResolver;
 
-	@Override
-	public Optional<Persona> findById(Long id) {
-		return personRepository.findById(id);
-	}
+    @Override
+    public Optional<Persona> findById(Long id) {
+        return personRepository.findById(id);
+    }
 
-	@Override
-	@Transactional(readOnly = false)
-	public Persona save(Persona entityToSave) {
-		log.debug("Value of entity for saving:{}", entityToSave);
+    @Override
+    @Transactional(readOnly = false)
+    public Persona save(Persona entityToSave) {
+        log.debug("Value of entity for saving:{}", entityToSave);
 
-		preValidationsOnPersonUpdate(entityToSave);
+        preValidationsOnPersonUpdate(entityToSave);
 
-		CategoriaPersona categoriaPersona = new CategoriaPersona();
-		categoriaPersona.setId(CategoriaPersonaEnum.CLIENTE.getIdCategoriaPersona());
+        CategoriaPersona categoriaPersona = new CategoriaPersona();
+        categoriaPersona.setId(CategoriaPersonaEnum.CLIENTE.getIdCategoriaPersona());
 
-		entityToSave.setCodigoPersona(buildCode(categoriaPersona, AuthenticationUtils.getCurrentGroup()));
+        entityToSave.setCodigoPersona(
+                buildCode(categoriaPersona, AuthenticationUtils.getCurrentGroup()));
 
-		Persona personaSaved = personRepository.save(entityToSave);
+        Persona personaSaved = personRepository.save(entityToSave);
 
-		PersonaOrganizacion personaOrganizacion = new PersonaOrganizacion();
-		personaOrganizacion.setCategoriaPersona(categoriaPersona);
-		personaOrganizacion.setPersona(personaSaved);
-		personaOrganizacion.setOrganizacion(AuthenticationUtils.getCurrentGroup());
-		personOrganizationRepository.save(personaOrganizacion);
+        PersonaOrganizacion personaOrganizacion = new PersonaOrganizacion();
+        personaOrganizacion.setCategoriaPersona(categoriaPersona);
+        personaOrganizacion.setPersona(personaSaved);
+        personaOrganizacion.setOrganizacion(AuthenticationUtils.getCurrentGroup());
+        personOrganizationRepository.save(personaOrganizacion);
 
-		return personaSaved;
-	}
+        return personaSaved;
+    }
 
-	@Override
-	@Transactional(readOnly = false)
-	public Persona saveWithOrganizationId(Persona entityToSave, CategoriaPersona personCategory, Organizacion group) {
-		preValidationsOnPersonUpdate(entityToSave);
+    @Override
+    @Transactional(readOnly = false)
+    public Persona saveWithOrganizationId(
+            Persona entityToSave, CategoriaPersona personCategory, Organizacion group) {
+        preValidationsOnPersonUpdate(entityToSave);
 
-		log.debug("Valor del grupo:{}", group);
+        log.debug("Valor del grupo:{}", group);
 
-		entityToSave.setCodigoPersona(buildCode(personCategory, group));
+        entityToSave.setCodigoPersona(buildCode(personCategory, group));
 
-		Persona personaSaved = personRepository.save(entityToSave);
+        Persona personaSaved = personRepository.save(entityToSave);
 
-		PersonaOrganizacion personaOrganizacion = new PersonaOrganizacion();
-		personaOrganizacion.setCategoriaPersona(personCategory);
-		personaOrganizacion.setPersona(personaSaved);
-		personaOrganizacion.setOrganizacion(group);
-		personOrganizationRepository.save(personaOrganizacion);
+        PersonaOrganizacion personaOrganizacion = new PersonaOrganizacion();
+        personaOrganizacion.setCategoriaPersona(personCategory);
+        personaOrganizacion.setPersona(personaSaved);
+        personaOrganizacion.setOrganizacion(group);
+        personOrganizationRepository.save(personaOrganizacion);
 
-		return personaSaved;
-	}
+        return personaSaved;
+    }
 
-	@Override
-	@Transactional(readOnly = false)
-//	@PreAuthorize("#entityToMerge.organizacion.id == authentication.details.rootCenterId")
-	public Persona update(Persona entityToMerge) {
-		preValidationsOnPersonUpdate(entityToMerge);
+    @Override
+    @Transactional(readOnly = false)
+    //	@PreAuthorize("#entityToMerge.organizacion.id == authentication.details.rootCenterId")
+    public Persona update(Persona entityToMerge) {
+        preValidationsOnPersonUpdate(entityToMerge);
 
-		// TODO aqui hay que chequear que la organizacion del token es igual a un
-		// registro en persona_organizacion
+        // TODO aqui hay que chequear que la organizacion del token es igual a un
+        // registro en persona_organizacion
 
-		return personRepository.save(entityToMerge);
-	}
+        return personRepository.save(entityToMerge);
+    }
 
-	@Override
-	public Page<Persona> findLike(String globalFilter, Pageable pageable) {
-		return personRepository.findPersonsLike(globalFilter, pageable);
-	}
+    @Override
+    public Page<Persona> findLike(String globalFilter, Pageable pageable) {
+        return personRepository.findPersonsLike(globalFilter, pageable);
+    }
 
-	@Override
-	public List<Persona> findByEMail(String emailPersona) {
-		return personRepository.findByEMailPersona(emailPersona);
-	}
+    @Override
+    public List<Persona> findByEMail(String emailPersona) {
+        return personRepository.findByEMailPersona(emailPersona);
+    }
 
-	@Override
-	public void checkPersonIsPresentBehaviour(Persona persona, DataIntegrityViolationException e) {
-		Optional<Entry<String, String>> constraint = defaultConstraintNameResolver.getConstraintName(ExceptionUtils.getRootCauseMessage(e));
+    @Override
+    public void checkPersonIsPresentBehaviour(Persona persona, DataIntegrityViolationException e) {
+        Optional<Entry<String, String>> constraint =
+                defaultConstraintNameResolver.getConstraintName(
+                        ExceptionUtils.getRootCauseMessage(e));
 
-		if (constraint.isPresent() && constraint.get().getValue().equalsIgnoreCase("exception.person.already.exists")) {
-			log.debug("Si, es una exception del tipo que ya existe, que hacemos?");
+        if (constraint.isPresent()
+                && constraint
+                        .get()
+                        .getValue()
+                        .equalsIgnoreCase("exception.person.already.exists")) {
+            log.debug("Si, es una exception del tipo que ya existe, que hacemos?");
 
-			preValidationsOnPersonUpdate(persona);
+            preValidationsOnPersonUpdate(persona);
 
-			Optional<Long> personId = personRepository.findByGlobalConstraint(
-					persona.getTipoDocumentoIdentificacion().getId(), persona.getCedulaPersona(),
-					persona.getUbicacionGeograficaByIdPais().getId());
+            Optional<Long> personId =
+                    personRepository.findByGlobalConstraint(
+                            persona.getTipoDocumentoIdentificacion().getId(),
+                            persona.getCedulaPersona(),
+                            persona.getUbicacionGeograficaByIdPais().getId());
 
-			if (personId.isPresent()) {
-				personOrganizationRepository.findByPersonaId(personId.get()).ifPresentOrElse(value -> {
-					throw new PersonAlreadyExistsSameOrganizationException(persona);
-				}, () -> {
-					throw new PersonAlreadyExistsDifferentOrganizationException(persona);
-				});
-			}
-		} else {
-			throw e;
-		}
-	}
+            if (personId.isPresent()) {
+                personOrganizationRepository
+                        .findByPersonaId(personId.get())
+                        .ifPresentOrElse(
+                                value -> {
+                                    throw new PersonAlreadyExistsSameOrganizationException(persona);
+                                },
+                                () -> {
+                                    throw new PersonAlreadyExistsDifferentOrganizationException(
+                                            persona);
+                                });
+            }
+        } else {
+            throw e;
+        }
+    }
 
-	private void preValidationsOnPersonUpdate(Persona entityToSave) {
-		if (StringUtils.isBlank(entityToSave.getTelefonoFijoPersona())) {
-			entityToSave.setTelefonoFijoPersona("N/A");
-		}
+    private void preValidationsOnPersonUpdate(Persona entityToSave) {
+        if (StringUtils.isBlank(entityToSave.getTelefonoFijoPersona())) {
+            entityToSave.setTelefonoFijoPersona("N/A");
+        }
 
-		TipoDocumentoIdentificacion identityDocumentType = identityDocumentTypeRepository
-				.findById(entityToSave.getTipoDocumentoIdentificacion().getId()).orElseThrow(
-						() -> new DataIntegrityViolationException("fk_id_tipo_documento_identificacion_from_persona"));
+        TipoDocumentoIdentificacion identityDocumentType =
+                identityDocumentTypeRepository
+                        .findById(entityToSave.getTipoDocumentoIdentificacion().getId())
+                        .orElseThrow(
+                                () ->
+                                        new DataIntegrityViolationException(
+                                                "fk_id_tipo_documento_identificacion_from_persona"));
 
-		CodigoPostal postalCode = postalCodesRepository.findById(entityToSave.getCodigoPostal().getId())
-				.orElseThrow(() -> new DataIntegrityViolationException("fk_id_codigo_postal_from_persona"));
+        CodigoPostal postalCode =
+                postalCodesRepository
+                        .findById(entityToSave.getCodigoPostal().getId())
+                        .orElseThrow(
+                                () ->
+                                        new DataIntegrityViolationException(
+                                                "fk_id_codigo_postal_from_persona"));
 
-		entityToSave.setCodigoPostal(postalCode);
-		entityToSave.setTipoDocumentoIdentificacion(identityDocumentType);
-		entityToSave.setUbicacionGeograficaByIdPais(postalCode.getUbicacionGeografica());
-	}
+        entityToSave.setCodigoPostal(postalCode);
+        entityToSave.setTipoDocumentoIdentificacion(identityDocumentType);
+        entityToSave.setUbicacionGeograficaByIdPais(postalCode.getUbicacionGeografica());
+    }
 
-	private String buildCode(CategoriaPersona categoriaPersona, Organizacion organizacion) {
-		if (categoriaPersona.getId().longValue() == CategoriaPersonaEnum.CLIENTE.getIdCategoriaPersona().longValue()) {
-			return LocalDate.now().getYear() + StringUtils.leftPad(
-					organizationService.getNextCodeNumber(organizacion.getId(), TipoDocumentoEnum.HISTORIA).toString(),
-					4, '0');
-		} else if (categoriaPersona.getId().longValue() == CategoriaPersonaEnum.DOCTOR.getIdCategoriaPersona()
-				.longValue()
-				|| categoriaPersona.getId().longValue() == CategoriaPersonaEnum.EMPLEADO.getIdCategoriaPersona()
-						.longValue()) {
-			return "EMPL" + StringUtils.leftPad(
-					organizationService.getNextCodeNumber(organizacion.getId(), TipoDocumentoEnum.EMPLEADO).toString(),
-					4, '0');
-		} else if (categoriaPersona.getId().longValue() == CategoriaPersonaEnum.SEGURO.getIdCategoriaPersona()
-				.longValue()
-				|| categoriaPersona.getId().longValue() == CategoriaPersonaEnum.ACREEDOR.getIdCategoriaPersona()
-						.longValue()) {
-			return "ACRE" + StringUtils.leftPad(
-					organizationService.getNextCodeNumber(organizacion.getId(), TipoDocumentoEnum.ACREEDOR).toString(),
-					4, '0');
-		}
+    private String buildCode(CategoriaPersona categoriaPersona, Organizacion organizacion) {
+        if (categoriaPersona.getId().longValue()
+                == CategoriaPersonaEnum.CLIENTE.getIdCategoriaPersona().longValue()) {
+            return LocalDate.now().getYear()
+                    + StringUtils.leftPad(
+                            organizationService
+                                    .getNextCodeNumber(
+                                            organizacion.getId(), TipoDocumentoEnum.HISTORIA)
+                                    .toString(),
+                            4,
+                            '0');
+        } else if (categoriaPersona.getId().longValue()
+                        == CategoriaPersonaEnum.DOCTOR.getIdCategoriaPersona().longValue()
+                || categoriaPersona.getId().longValue()
+                        == CategoriaPersonaEnum.EMPLEADO.getIdCategoriaPersona().longValue()) {
+            return "EMPL"
+                    + StringUtils.leftPad(
+                            organizationService
+                                    .getNextCodeNumber(
+                                            organizacion.getId(), TipoDocumentoEnum.EMPLEADO)
+                                    .toString(),
+                            4,
+                            '0');
+        } else if (categoriaPersona.getId().longValue()
+                        == CategoriaPersonaEnum.SEGURO.getIdCategoriaPersona().longValue()
+                || categoriaPersona.getId().longValue()
+                        == CategoriaPersonaEnum.ACREEDOR.getIdCategoriaPersona().longValue()) {
+            return "ACRE"
+                    + StringUtils.leftPad(
+                            organizationService
+                                    .getNextCodeNumber(
+                                            organizacion.getId(), TipoDocumentoEnum.ACREEDOR)
+                                    .toString(),
+                            4,
+                            '0');
+        }
 
-		return null;
-	}
-
+        return null;
+    }
 }

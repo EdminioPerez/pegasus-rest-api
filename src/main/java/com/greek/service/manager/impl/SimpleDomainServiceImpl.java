@@ -1,13 +1,5 @@
+/* AssentSoftware (C)2021 */
 package com.greek.service.manager.impl;
-
-import java.text.Collator;
-import java.util.Comparator;
-import java.util.List;
-
-import org.springframework.context.MessageSource;
-import org.springframework.context.i18n.LocaleContextHolder;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import com.greek.main.hibernate.model.CodigoPostal;
 import com.greek.main.hibernate.model.Poblacion;
@@ -24,79 +16,91 @@ import com.greek.service.repositories.MunicipalityRepository;
 import com.greek.service.repositories.PostalCodesRepository;
 import com.greek.service.repositories.ProvinceRepository;
 import com.greek.service.repositories.SexRepository;
-
+import java.text.Collator;
+import java.util.Comparator;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class SimpleDomainServiceImpl implements SimpleDomainService {
 
-	private final BloodGroupsRepository bloodGroupsRepository;
-	private final SexRepository sexRepository;
-	private final ProvinceRepository provinceRepository;
-	private final MunicipalityRepository municipalityRepository;
-	private final PostalCodesRepository postalCodesRepository;
-	private final IdentityDocumentTypeRepository identityDocumentTypeRepository;
-	private final GeographicLocationRepository geographicLocationRepository;
-	private final MessageSource messageSource;
+    private final BloodGroupsRepository bloodGroupsRepository;
+    private final SexRepository sexRepository;
+    private final ProvinceRepository provinceRepository;
+    private final MunicipalityRepository municipalityRepository;
+    private final PostalCodesRepository postalCodesRepository;
+    private final IdentityDocumentTypeRepository identityDocumentTypeRepository;
+    private final GeographicLocationRepository geographicLocationRepository;
+    private final MessageSource messageSource;
 
-	@Override
-	public List<TipoSangre> findBloodGroups() {
-		return bloodGroupsRepository.findAll();
-	}
+    @Override
+    public List<TipoSangre> findBloodGroups() {
+        return bloodGroupsRepository.findAll();
+    }
 
-	@Override
-	public List<Sexo> findSex() {
-		List<Sexo> sexoItems = sexRepository.findAll();
+    @Override
+    public List<Sexo> findSex() {
+        List<Sexo> sexoItems = sexRepository.findAll();
 
-		for (Sexo sexo : sexoItems) {
-			sexo.setNombreSexo(messageSource.getMessage("lookup.sex." + sexo.getCodigoSexo(), null,
-					LocaleContextHolder.getLocale()));
-		}
+        for (Sexo sexo : sexoItems) {
+            sexo.setNombreSexo(
+                    messageSource.getMessage(
+                            "lookup.sex." + sexo.getCodigoSexo(),
+                            null,
+                            LocaleContextHolder.getLocale()));
+        }
 
-		return sexoItems;
-	}
+        return sexoItems;
+    }
 
-	@Override
-	public List<Provincia> findProvinces() {
-		return provinceRepository.findProvinces();
-	}
+    @Override
+    public List<Provincia> findProvinces() {
+        return provinceRepository.findProvinces();
+    }
 
-	@Override
-	public List<Poblacion> findMunicipalities(Long provinceId) {
-		return municipalityRepository.findMunicipalities(provinceId);
-	}
+    @Override
+    public List<Poblacion> findMunicipalities(Long provinceId) {
+        return municipalityRepository.findMunicipalities(provinceId);
+    }
 
-	@Override
-	public List<CodigoPostal> findPostalCodes(Long provinceId, Long municipialityId) {
-		return postalCodesRepository.findAll(provinceId, municipialityId);
-	}
+    @Override
+    public List<CodigoPostal> findPostalCodes(Long provinceId, Long municipialityId) {
+        return postalCodesRepository.findAll(provinceId, municipialityId);
+    }
 
-	@Override
-	public CodigoPostal findPostalCodeById(Long id) {
-		return postalCodesRepository.findById(id).orElse(null);
-	}
+    @Override
+    public CodigoPostal findPostalCodeById(Long id) {
+        return postalCodesRepository.findById(id).orElse(null);
+    }
 
-	public List<TipoDocumentoIdentificacion> findIdentityDocumentsTypeByCountry() {
-		return identityDocumentTypeRepository.findAll();
-	}
+    public List<TipoDocumentoIdentificacion> findIdentityDocumentsTypeByCountry() {
+        return identityDocumentTypeRepository.findAll();
+    }
 
-	@Override
-	public List<UbicacionGeografica> findAllGeographicLocations() {
-		List<UbicacionGeografica> ubicacionGeograficaItems = geographicLocationRepository
-				.findByUbicacionGeograficaIsNull();
+    @Override
+    public List<UbicacionGeografica> findAllGeographicLocations() {
+        List<UbicacionGeografica> ubicacionGeograficaItems =
+                geographicLocationRepository.findByUbicacionGeograficaIsNull();
 
-		for (UbicacionGeografica ubicacionGeografica : ubicacionGeograficaItems) {
-			ubicacionGeografica.setNombreUbicacionGeografica(messageSource.getMessage(
-					"lookup.geographic.location." + ubicacionGeografica.getCodigoUbicacionGeografica(), null,
-					LocaleContextHolder.getLocale()));
-		}
+        for (UbicacionGeografica ubicacionGeografica : ubicacionGeograficaItems) {
+            ubicacionGeografica.setNombreUbicacionGeografica(
+                    messageSource.getMessage(
+                            "lookup.geographic.location."
+                                    + ubicacionGeografica.getCodigoUbicacionGeografica(),
+                            null,
+                            LocaleContextHolder.getLocale()));
+        }
 
-		ubicacionGeograficaItems
-				.sort(Comparator.comparing(UbicacionGeografica::getNombreUbicacionGeografica, Collator.getInstance()));
+        ubicacionGeograficaItems.sort(
+                Comparator.comparing(
+                        UbicacionGeografica::getNombreUbicacionGeografica, Collator.getInstance()));
 
-		return ubicacionGeograficaItems;
-	}
-
+        return ubicacionGeograficaItems;
+    }
 }

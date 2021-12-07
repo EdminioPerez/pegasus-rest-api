@@ -1,3 +1,4 @@
+/* AssentSoftware (C)2021 */
 package com.greek.service;
 
 import org.springframework.boot.SpringApplication;
@@ -8,8 +9,7 @@ import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 @EnableDiscoveryClient
 public class RestServicesApplication {
 
-	public static void main(String[] args) {
-		SpringApplication.run(RestServicesApplication.class, args);
-	}
-
+    public static void main(String[] args) {
+        SpringApplication.run(RestServicesApplication.class, args);
+    }
 }

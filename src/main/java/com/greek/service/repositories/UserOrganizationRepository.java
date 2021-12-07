@@ -1,11 +1,10 @@
+/* AssentSoftware (C)2021 */
 package com.greek.service.repositories;
 
+import com.greek.main.hibernate.model.UsuarioOrganizacion;
 import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.stereotype.Repository;
 
-import com.greek.main.hibernate.model.UsuarioOrganizacion;
-
 @Repository
-public interface UserOrganizationRepository extends PagingAndSortingRepository<UsuarioOrganizacion, Long> {
-
-}
+public interface UserOrganizationRepository
+        extends PagingAndSortingRepository<UsuarioOrganizacion, Long> {}

@@ -1,11 +1,9 @@
 /* AssentSoftware (C)2021 */
 package com.greek.service.security.jwt.converters;
 
-import java.util.Map;
-
-import org.springframework.stereotype.Component;
-
 import com.gvt.security.jwt.converters.DefaultClaimsConverter;
+import java.util.Map;
+import org.springframework.stereotype.Component;
 
 @Component
 public class CustomClaimsConverter extends DefaultClaimsConverter {
