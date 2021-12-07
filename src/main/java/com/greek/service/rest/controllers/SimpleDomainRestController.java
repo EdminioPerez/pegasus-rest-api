@@ -4,40 +4,38 @@ import java.util.List;
 
 import org.springframework.web.bind.annotation.RestController;
 
-import com.greek.commons.dto.v1.simple.SimpleDTO;
+import com.greek.commons.dto.v1.simple.SimpleDto;
 import com.greek.service.manager.SimpleDomainService;
 import com.greek.service.mappers.SimpleDomainMapper;
-import com.greek.service.rest.api.SimpleDomainRestAPI;
+import com.greek.service.rest.api.SimpleDomainRestApi;
+
+import lombok.RequiredArgsConstructor;
 
 @RestController
-public class SimpleDomainRestController implements SimpleDomainRestAPI {
+@RequiredArgsConstructor
+public class SimpleDomainRestController implements SimpleDomainRestApi {
 
-	private SimpleDomainService simpleDomainService;
-	private SimpleDomainMapper simpleDomainMapper;
-
-	public SimpleDomainRestController(SimpleDomainService simpleDomainService, SimpleDomainMapper simpleDomainMapper) {
-		this.simpleDomainService = simpleDomainService;
-		this.simpleDomainMapper = simpleDomainMapper;
-	}
+	private final SimpleDomainService simpleDomainService;
+	private final SimpleDomainMapper simpleDomainMapper;
 
 	@Override
-	public List<SimpleDTO> getBloodGroups() {
+	public List<SimpleDto> getBloodGroups() {
 		return simpleDomainMapper.fromBloodGroupToDtos(simpleDomainService.findBloodGroups());
 	}
 
 	@Override
-	public List<SimpleDTO> getSex() {
+	public List<SimpleDto> getSex() {
 		return simpleDomainMapper.fromSexToDtos(simpleDomainService.findSex());
 	}
 
 	@Override
-	public List<SimpleDTO> getIdentityDocumentsTypes() {
+	public List<SimpleDto> getIdentityDocumentsTypes() {
 		return simpleDomainMapper
 				.fromIdentityDocumentsTypesToDtos(simpleDomainService.findIdentityDocumentsTypeByCountry());
 	}
 
 	@Override
-	public List<SimpleDTO> getCountries() {
+	public List<SimpleDto> getCountries() {
 		return simpleDomainMapper.fromGeographicLocationToDtos(simpleDomainService.findAllGeographicLocations());
 	}
 

@@ -9,7 +9,7 @@ ENV PROFILE dev
 
 ENV EUREKA_SERVER_URL http://192.168.0.104:8762/eureka/
 
-ENV DATASOURCE_URL jdbc:postgresql://localhost:5434/pegasus_dev
+ENV DATASOURCE_URL jdbc:postgresql://localhost:5436/pegasus_dev
 ENV DATASOURCE_DRIVER_CLASS_NAME org.postgresql.Driver
 ENV DATASOURCE_USERNAME pegasus_dev
 ENV DATASOURCE_PASSWORD 1234

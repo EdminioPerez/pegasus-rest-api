@@ -6,15 +6,15 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import java.util.List;
 import java.util.Locale;
 
-import org.junit.BeforeClass;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestPropertySource;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import com.greek.main.hibernate.model.UbicacionGeografica;
 import com.greek.service.manager.SimpleDomainService;
@@ -24,7 +24,7 @@ import com.gvt.rest.context.i18n.Translator;
 
 import lombok.extern.slf4j.Slf4j;
 
-@RunWith(SpringRunner.class)
+@ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = { JPAConfiguration.class, DataSourceAutoConfiguration.class, Translator.class,
 		RestServicesConfiguration.class, SimpleDomainServiceImpl.class })
 @EnableJpaRepositories(basePackages = { "com.greek.service.repositories" })
@@ -32,7 +32,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class GeographicLocationServiceLayerIT {
 
-	@BeforeClass
+	@BeforeEach
 	public static void setDefaultLocale() {
 		Locale.setDefault(Locale.FRENCH);
 	}

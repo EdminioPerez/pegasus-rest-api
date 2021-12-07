@@ -25,32 +25,21 @@ import com.greek.service.repositories.PostalCodesRepository;
 import com.greek.service.repositories.ProvinceRepository;
 import com.greek.service.repositories.SexRepository;
 
+import lombok.RequiredArgsConstructor;
+
 @Service
 @Transactional(readOnly = true)
+@RequiredArgsConstructor
 public class SimpleDomainServiceImpl implements SimpleDomainService {
 
-	private BloodGroupsRepository bloodGroupsRepository;
-	private SexRepository sexRepository;
-	private ProvinceRepository provinceRepository;
-	private MunicipalityRepository municipalityRepository;
-	private PostalCodesRepository postalCodesRepository;
-	private IdentityDocumentTypeRepository identityDocumentTypeRepository;
-	private GeographicLocationRepository geographicLocationRepository;
-	private MessageSource messageSource;
-
-	public SimpleDomainServiceImpl(BloodGroupsRepository bloodGroupsRepository, SexRepository sexRepository,
-			ProvinceRepository provinceRepository, MunicipalityRepository municipalityRepository,
-			PostalCodesRepository postalCodesRepository, IdentityDocumentTypeRepository identityDocumentTypeRepository,
-			GeographicLocationRepository geographicLocationRepository, MessageSource messageSource) {
-		this.bloodGroupsRepository = bloodGroupsRepository;
-		this.sexRepository = sexRepository;
-		this.provinceRepository = provinceRepository;
-		this.municipalityRepository = municipalityRepository;
-		this.postalCodesRepository = postalCodesRepository;
-		this.identityDocumentTypeRepository = identityDocumentTypeRepository;
-		this.geographicLocationRepository = geographicLocationRepository;
-		this.messageSource = messageSource;
-	}
+	private final BloodGroupsRepository bloodGroupsRepository;
+	private final SexRepository sexRepository;
+	private final ProvinceRepository provinceRepository;
+	private final MunicipalityRepository municipalityRepository;
+	private final PostalCodesRepository postalCodesRepository;
+	private final IdentityDocumentTypeRepository identityDocumentTypeRepository;
+	private final GeographicLocationRepository geographicLocationRepository;
+	private final MessageSource messageSource;
 
 	@Override
 	public List<TipoSangre> findBloodGroups() {

@@ -8,15 +8,14 @@ import com.greek.main.hibernate.model.Organizacion;
 import com.greek.service.manager.OrganizationService;
 import com.greek.service.repositories.OrganizationRepository;
 
+import lombok.RequiredArgsConstructor;
+
 @Service
+@RequiredArgsConstructor
 @Transactional(readOnly = true)
 public class OrganizationServiceImpl implements OrganizationService {
 
-	private OrganizationRepository organizationRepository;
-
-	public OrganizationServiceImpl(OrganizationRepository organizationRepository) {
-		this.organizationRepository = organizationRepository;
-	}
+	private final OrganizationRepository organizationRepository;
 
 	@Override
 	@Transactional(readOnly = false, propagation = Propagation.MANDATORY)

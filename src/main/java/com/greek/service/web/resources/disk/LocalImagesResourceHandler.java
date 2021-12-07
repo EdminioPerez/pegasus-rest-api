@@ -2,7 +2,6 @@ package com.greek.service.web.resources.disk;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -20,8 +19,12 @@ import com.greek.service.web.resources.ImagesResourceHandler;
 @Component("imagesResourceHandler")
 public class LocalImagesResourceHandler implements ImagesResourceHandler {
 
-	@Value("${app.resources.disk.directory}")
 	private String resourcesDirectory;
+	
+	public LocalImagesResourceHandler(@Value("${app.resources.disk.directory}")
+	 String resourcesDirectory) {
+		this.resourcesDirectory = resourcesDirectory;
+	}
 
 	@Override
 	public String getImage(String url) throws IOException {

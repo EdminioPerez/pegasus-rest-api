@@ -12,7 +12,7 @@ It provides support for
 - Logging
 - Web Monitoring
 - Life check
-- DTO handling
+- Dto handling
 
 ## First running
 

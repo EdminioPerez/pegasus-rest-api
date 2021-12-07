@@ -7,7 +7,7 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Named;
 
-import com.greek.commons.dto.v1.simple.SimpleDTO;
+import com.greek.commons.dto.v1.simple.SimpleDto;
 import com.greek.main.hibernate.model.CodigoPostal;
 import com.greek.main.hibernate.model.Poblacion;
 import com.greek.main.hibernate.model.Provincia;
@@ -25,14 +25,14 @@ public interface SimpleDomainMapper {
 	@Mapping(source = "codigoTipoSangre", target = "code")
 	@Mapping(source = "nombreTipoSangre", target = "description")
 	@Mapping(target = "version", ignore = true)
-	SimpleDTO fromBloodGroupToDto(TipoSangre tipoSangre);
+	SimpleDto fromBloodGroupToDto(TipoSangre tipoSangre);
 
 	@Mapping(source = "codigoTipoSangre", target = "code")
 	@Mapping(source = "nombreTipoSangre", target = "description")
-	SimpleDTO fromBloodGroupToFullDto(TipoSangre tipoSangre);
+	SimpleDto fromBloodGroupToFullDto(TipoSangre tipoSangre);
 
 	@IterableMapping(qualifiedByName = "bloodGroupNormalMapping")
-	List<SimpleDTO> fromBloodGroupToDtos(List<TipoSangre> tiposSangre);
+	List<SimpleDto> fromBloodGroupToDtos(List<TipoSangre> tiposSangre);
 
 	/** ---------- Sex Mapping ---------- **/
 
@@ -40,14 +40,14 @@ public interface SimpleDomainMapper {
 	@Mapping(source = "codigoSexo", target = "code")
 	@Mapping(source = "nombreSexo", target = "description")
 	@Mapping(target = "version", ignore = true)
-	SimpleDTO fromSexToDto(Sexo sexo);
+	SimpleDto fromSexToDto(Sexo sexo);
 
 	@Mapping(source = "codigoSexo", target = "code")
 	@Mapping(source = "nombreSexo", target = "description")
-	SimpleDTO fromSexToFullDto(Sexo sexo);
+	SimpleDto fromSexToFullDto(Sexo sexo);
 
 	@IterableMapping(qualifiedByName = "sexNormalMapping")
-	List<SimpleDTO> fromSexToDtos(List<Sexo> sexo);
+	List<SimpleDto> fromSexToDtos(List<Sexo> sexo);
 
 	/** ---------- Province Mapping ---------- **/
 
@@ -55,14 +55,14 @@ public interface SimpleDomainMapper {
 	@Mapping(source = "codigoProvincia", target = "code")
 	@Mapping(source = "nombreProvincia", target = "description")
 	@Mapping(target = "version", ignore = true)
-	SimpleDTO fromProvinceToDto(Provincia provincia);
+	SimpleDto fromProvinceToDto(Provincia provincia);
 
 	@Mapping(source = "codigoProvincia", target = "code")
 	@Mapping(source = "nombreProvincia", target = "description")
-	SimpleDTO fromProvinceToFullDto(Provincia provincia);
+	SimpleDto fromProvinceToFullDto(Provincia provincia);
 
 	@IterableMapping(qualifiedByName = "provinceNormalMapping")
-	List<SimpleDTO> fromProvinceToDtos(List<Provincia> provincias);
+	List<SimpleDto> fromProvinceToDtos(List<Provincia> provincias);
 
 	/** ---------- Municipality Mapping ---------- **/
 
@@ -70,27 +70,27 @@ public interface SimpleDomainMapper {
 	@Mapping(source = "codigoPoblacion", target = "code")
 	@Mapping(source = "nombrePoblacion", target = "description")
 	@Mapping(target = "version", ignore = true)
-	SimpleDTO fromMunicipalityToDto(Poblacion poblacion);
+	SimpleDto fromMunicipalityToDto(Poblacion poblacion);
 
 	@Mapping(source = "codigoPoblacion", target = "code")
 	@Mapping(source = "nombrePoblacion", target = "description")
-	SimpleDTO fromMunicipalityToFullDto(Poblacion poblacion);
+	SimpleDto fromMunicipalityToFullDto(Poblacion poblacion);
 
 	@IterableMapping(qualifiedByName = "municipalityNormalMapping")
-	List<SimpleDTO> fromMunicipalityToDtos(List<Poblacion> poblaciones);
+	List<SimpleDto> fromMunicipalityToDtos(List<Poblacion> poblaciones);
 
 	/** ---------- Postal codes Mapping ---------- **/
 
 	@Named(value = "postalCodeNormalMapping")
 	@Mapping(source = "codigoPostal", target = "code")
 	@Mapping(target = "version", ignore = true)
-	SimpleDTO fromPostalCodeToDto(CodigoPostal codigoPostal);
+	SimpleDto fromPostalCodeToDto(CodigoPostal codigoPostal);
 
 	@Mapping(source = "codigoPostal", target = "code")
-	SimpleDTO fromPostalCodeToFullDto(CodigoPostal codigoPostal);
+	SimpleDto fromPostalCodeToFullDto(CodigoPostal codigoPostal);
 
 	@IterableMapping(qualifiedByName = "postalCodeNormalMapping")
-	List<SimpleDTO> fromPostalCodesToDtos(List<CodigoPostal> codigosPostales);
+	List<SimpleDto> fromPostalCodesToDtos(List<CodigoPostal> codigosPostales);
 
 	/** ---------- Identity documents types Mapping ---------- **/
 
@@ -98,14 +98,14 @@ public interface SimpleDomainMapper {
 	@Mapping(source = "codigoTipoDocumentoIdentificacion", target = "code")
 	@Mapping(source = "nombreTipoDocumentoIdentificacion", target = "description")
 	@Mapping(target = "version", ignore = true)
-	SimpleDTO fromIdentityDocumentsTypesToDto(TipoDocumentoIdentificacion tipoDocumentoIdentificacion);
+	SimpleDto fromIdentityDocumentsTypesToDto(TipoDocumentoIdentificacion tipoDocumentoIdentificacion);
 
 	@Mapping(source = "codigoTipoDocumentoIdentificacion", target = "code")
 	@Mapping(source = "nombreTipoDocumentoIdentificacion", target = "description")
-	SimpleDTO fromIdentityDocumentsTypesToFullDto(TipoDocumentoIdentificacion tipoDocumentoIdentificacion);
+	SimpleDto fromIdentityDocumentsTypesToFullDto(TipoDocumentoIdentificacion tipoDocumentoIdentificacion);
 
 	@IterableMapping(qualifiedByName = "identityDocumentsTypesNormalMapping")
-	List<SimpleDTO> fromIdentityDocumentsTypesToDtos(List<TipoDocumentoIdentificacion> tiposDocumentosIdentificacion);
+	List<SimpleDto> fromIdentityDocumentsTypesToDtos(List<TipoDocumentoIdentificacion> tiposDocumentosIdentificacion);
 
 	/** ---------- GeographicLocation Mapping ---------- **/
 
@@ -113,13 +113,13 @@ public interface SimpleDomainMapper {
 	@Mapping(source = "codigoUbicacionGeografica", target = "code")
 	@Mapping(source = "nombreUbicacionGeografica", target = "description")
 	@Mapping(target = "version", ignore = true)
-	SimpleDTO fromGeographicLocationToDto(UbicacionGeografica ubicacionGeografica);
+	SimpleDto fromGeographicLocationToDto(UbicacionGeografica ubicacionGeografica);
 
 	@Mapping(source = "codigoUbicacionGeografica", target = "code")
 	@Mapping(source = "nombreUbicacionGeografica", target = "description")
-	SimpleDTO fromGeographicLocationToFullDto(UbicacionGeografica ubicacionGeografica);
+	SimpleDto fromGeographicLocationToFullDto(UbicacionGeografica ubicacionGeografica);
 
 	@IterableMapping(qualifiedByName = "geographicLocationNormalMapping")
-	List<SimpleDTO> fromGeographicLocationToDtos(List<UbicacionGeografica> ubicacionGeografica);
+	List<SimpleDto> fromGeographicLocationToDtos(List<UbicacionGeografica> ubicacionGeografica);
 
 }

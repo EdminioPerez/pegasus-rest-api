@@ -8,8 +8,8 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.greek.commons.dto.v1.user.ClientDTO;
-import com.greek.commons.dto.v1.user.SystemUserDTO;
+import com.greek.commons.dto.v1.user.ClientDto;
+import com.greek.commons.dto.v1.user.SystemUserDto;
 import com.greek.main.hibernate.model.CategoriaPersona;
 import com.greek.main.hibernate.model.CodigoPostal;
 import com.greek.main.hibernate.model.OpcionSino;
@@ -31,33 +31,35 @@ import com.greek.service.repositories.UserRoleRepository;
 import com.gvt.core.exceptions.LogicException;
 import com.gvt.rest.context.i18n.Translator;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @Service
 @Transactional(readOnly = true)
 @Slf4j
+@RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
 
-	private PersonService personService;
+	private final PersonService personService;
+	private final UserRepository userRepository;
+	private final OrganizationRepository organizationRepository;
+	private final UserOrganizationRepository userOrganizationRepository;
+	private final UserRoleRepository userRolRepository;
+	private final Translator translator;
 
-	private UserRepository userRepository;
-	private OrganizationRepository organizationRepository;
-	private UserOrganizationRepository userOrganizationRepository;
-	private UserRoleRepository userRolRepository;
-
-	public UserServiceImpl(UserRepository userRepository, OrganizationRepository organizationRepository,
-			UserOrganizationRepository userOrganizationRepository, UserRoleRepository userRolRepository,
-			PersonService personService) {
-		this.userRepository = userRepository;
-		this.organizationRepository = organizationRepository;
-		this.personService = personService;
-		this.userOrganizationRepository = userOrganizationRepository;
-		this.userRolRepository = userRolRepository;
-	}
+//	public UserServiceImpl(UserRepository userRepository, OrganizationRepository organizationRepository,
+//			UserOrganizationRepository userOrganizationRepository, UserRoleRepository userRolRepository,
+//			PersonService personService, Translator translator) {
+//		this.userRepository = userRepository;
+//		this.organizationRepository = organizationRepository;
+//		this.personService = personService;
+//		this.userOrganizationRepository = userOrganizationRepository;
+//		this.userRolRepository = userRolRepository;
+//	}
 
 	@Override
 	@Transactional(readOnly = false)
-	public List<Organizacion> createUser(SystemUserDTO systemUser, ClientDTO client, Long countryId, Locale locale) {
+	public List<Organizacion> createUser(SystemUserDto systemUser, ClientDto client, Long countryId, Locale locale) {
 		// Se configura el pais de registro y el idioma
 		UbicacionGeografica pais = new UbicacionGeografica();
 		pais.setId(countryId);
@@ -93,8 +95,8 @@ public class UserServiceImpl implements UserService {
 		sede.setRazonOrganizacion("Sede 1");
 		sede.setOrganizacion(organizacion);
 		sede.setOpcionSinoByEsHabilitado(opcionSinoByEsHabilitado);
-		sede.setFormatoCabecera(Translator.toLocale("reporte.header.default", locale));
-		sede.setFormatoPiePagina(Translator.toLocale("reporte.footer.default", locale));
+		sede.setFormatoCabecera(translator.toLocale("reporte.header.default", locale));
+		sede.setFormatoPiePagina(translator.toLocale("reporte.footer.default", locale));
 
 		log.trace("Looking up for a organization with RIF:{}", organizacion.getRifOrganizacion());
 		if (organizationRepository.findByRifOrganizacion(organizacion.getRifOrganizacion()) != null) {
@@ -109,7 +111,7 @@ public class UserServiceImpl implements UserService {
 		Usuario usuario = new Usuario();
 		usuario.setCodigoUsuario(systemUser.getEmail());
 		usuario.setPasswordUsuario(systemUser.getContrasena());
-		sede.setFormatoCabecera(Translator.toLocale("reporte.firma.default", locale));
+		sede.setFormatoCabecera(translator.toLocale("reporte.firma.default", locale));
 
 		// Se habilita la cuenta
 		OpcionSino opcionSinoByEsActiva = new OpcionSino();
@@ -211,7 +213,7 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public String[] builtRifsForOrganizations(SystemUserDTO systemUser, ClientDTO client) {
+	public String[] builtRifsForOrganizations(SystemUserDto systemUser, ClientDto client) {
 		String rifGrupo;
 		String rifOrganizacion;
 		String rifSede;

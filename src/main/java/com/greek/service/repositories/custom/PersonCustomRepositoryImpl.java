@@ -17,7 +17,6 @@ import org.springframework.data.repository.query.Param;
 
 import com.greek.main.hibernate.model.Persona;
 import com.greek.service.repositories.PersonCustomRepository;
-import com.gvt.security.utils.JwtUtils;
 
 public class PersonCustomRepositoryImpl implements PersonCustomRepository {
 
@@ -67,7 +66,7 @@ public class PersonCustomRepositoryImpl implements PersonCustomRepository {
 
 		query.append(" and p.organizacion.id = ?" + paramPlace);
 		queryCount.append(" and p.organizacion.id = ?" + paramPlace);
-		parameters.add(JwtUtils.getJwtAuthenticationDetails().getRootCenterId());
+//		parameters.add(JwtUtils.getJwtAuthenticationDetails().getRootCenterId());
 
 		Query jpqlquery = entityManager.createQuery(query.toString());
 		for (int x = 0; x < parameters.size(); ++x) {

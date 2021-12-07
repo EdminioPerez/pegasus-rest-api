@@ -12,11 +12,11 @@ import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.greek.commons.dto.v1.simple.ImageDTO;
+import com.greek.commons.dto.v1.simple.ImageDto;
 import com.gvt.swagger.annotations.ResponseOkSwagger;
 
 @RequestMapping("/api/v1/resources")
-public interface ResourcesRestAPI {
+public interface ResourcesRestApi {
 
 	@GetMapping(value = "/image")
 	@ResponseOkSwagger
@@ -24,6 +24,6 @@ public interface ResourcesRestAPI {
 
 	@PostMapping(value = "/image", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
 	@ResponseStatus(HttpStatus.CREATED)
-	ImageDTO uploadImage(@RequestPart(value = "image") MultipartFile image) throws IOException;
+	ImageDto uploadImage(@RequestPart(value = "image") MultipartFile image) throws IOException;
 
 }

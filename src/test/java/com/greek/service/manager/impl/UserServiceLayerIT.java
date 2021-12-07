@@ -1,25 +1,25 @@
 package com.greek.service.manager.impl;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.List;
 import java.util.Locale;
 import java.util.UUID;
 
 import org.apache.commons.lang3.RandomStringUtils;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestPropertySource;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import com.github.javafaker.Faker;
-import com.greek.commons.dto.v1.user.ClientDTO;
-import com.greek.commons.dto.v1.user.SystemUserDTO;
+import com.greek.commons.dto.v1.user.ClientDto;
+import com.greek.commons.dto.v1.user.SystemUserDto;
 import com.greek.main.hibernate.model.Organizacion;
 import com.greek.service.manager.UserService;
 import com.gvt.data.JPAConfiguration;
@@ -29,7 +29,7 @@ import com.gvt.security.test.context.support.WithMockedUser;
 
 import lombok.extern.slf4j.Slf4j;
 
-@RunWith(SpringRunner.class)
+@ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = { JPAConfiguration.class, DataSourceAutoConfiguration.class,
 		RestServicesConfiguration.class, SecurityEvaluationContextExtension.class, UserServiceImpl.class,
 		PersonServiceImpl.class, OrganizationServiceImpl.class })
@@ -54,7 +54,7 @@ public class UserServiceLayerIT {
 	}
 
 	private void extracted() {
-		SystemUserDTO systemUser = new SystemUserDTO();
+		SystemUserDto systemUser = new SystemUserDto();
 		systemUser.setIdValidation(UUID.randomUUID().toString());
 		systemUser.setNombres(faker.name().firstName());
 		systemUser.setApellidos(faker.name().lastName() + " " + faker.name().lastName());
@@ -65,7 +65,7 @@ public class UserServiceLayerIT {
 
 		log.trace("Numeric value:{}", RandomStringUtils.randomNumeric(1, 4));
 
-		ClientDTO client = new ClientDTO();
+		ClientDto client = new ClientDto();
 		client.setId(Long.valueOf(RandomStringUtils.randomNumeric(1, 4)));
 		client.setCedula(systemUser.getCedula());
 		client.setRazonSocial(systemUser.getNombres() + " " + systemUser.getApellidos());

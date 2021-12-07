@@ -39,20 +39,6 @@
 			<version>1.0.0-SNAPSHOT</version>
 		</dependency>
 
-		<!-- as we have a starter for postgresql, we must move this to there -->
-		<dependency>
-			<groupId>org.hibernate</groupId>
-			<artifactId>hibernate-jcache</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.ehcache</groupId>
-			<artifactId>jcache</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.postgresql</groupId>
-			<artifactId>postgresql</artifactId>
-		</dependency>
-
 		<!-- This and the logboook spring starter to a new lib for logging -->
 		<dependency>
 			<groupId>net.logstash.logback</groupId>
@@ -81,7 +67,7 @@
 		</dependency>
 		<dependency>
 			<groupId>swf.assent</groupId>
-			<artifactId>swf-boot-starter-security-oauth2</artifactId>
+			<artifactId>swf-boot-starter-security-oauth2-keycloak</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>swf.assent</groupId>
@@ -93,6 +79,14 @@
 		</dependency>
 		<dependency>
 			<groupId>swf.assent</groupId>
+			<artifactId>swf-boot-starter-logging-support</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>swf.assent</groupId>
+			<artifactId>swf-boot-starter-cloud-support</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>swf.assent</groupId>
 			<artifactId>swf-boot-starter-rest-components</artifactId>
 		</dependency>
 		<dependency>
@@ -101,15 +95,9 @@
 		</dependency>
 
 		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
+			<groupId>swf.assent</groupId>
+			<artifactId>swf-boot-starter-security-oauth2-test</artifactId>
 			<scope>test</scope>
-			<exclusions>
-				<exclusion>
-					<groupId>org.hamcrest</groupId>
-					<artifactId>hamcrest-core</artifactId>
-				</exclusion>
-			</exclusions>
 		</dependency>
 		<dependency>
 			<groupId>org.hamcrest</groupId>

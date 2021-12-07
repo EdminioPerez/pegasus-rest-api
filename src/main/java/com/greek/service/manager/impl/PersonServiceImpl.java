@@ -6,6 +6,7 @@ import java.util.Map.Entry;
 import java.util.Optional;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -18,6 +19,7 @@ import com.greek.main.hibernate.model.Organizacion;
 import com.greek.main.hibernate.model.Persona;
 import com.greek.main.hibernate.model.PersonaOrganizacion;
 import com.greek.main.hibernate.model.TipoDocumentoIdentificacion;
+import com.greek.service.data.utils.CustomConstraintNameResolver;
 import com.greek.service.exceptions.PersonAlreadyExistsDifferentOrganizationException;
 import com.greek.service.exceptions.PersonAlreadyExistsSameOrganizationException;
 import com.greek.service.manager.OrganizationService;
@@ -27,34 +29,23 @@ import com.greek.service.repositories.IdentityDocumentTypeRepository;
 import com.greek.service.repositories.PersonOrganizationRepository;
 import com.greek.service.repositories.PersonRepository;
 import com.greek.service.repositories.PostalCodesRepository;
-import com.greek.service.utils.AuthenticationUtils;
-import com.greek.service.utils.DatabaseConstraintUtils;
+import com.greek.service.security.utils.AuthenticationUtils;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @Service
 @Transactional(readOnly = true)
+@RequiredArgsConstructor
 @Slf4j
 public class PersonServiceImpl implements PersonService {
 
-	private OrganizationService organizationService;
-
-	private PersonRepository personRepository;
-	private PersonOrganizationRepository personOrganizationRepository;
-	private IdentityDocumentTypeRepository identityDocumentTypeRepository;
-	private PostalCodesRepository postalCodesRepository;
-
-	public PersonServiceImpl(PersonRepository personRepository, OrganizationService organizationService,
-			PersonOrganizationRepository personOrganizationRepository,
-
-			IdentityDocumentTypeRepository identityDocumentTypeRepository,
-			PostalCodesRepository postalCodesRepository) {
-		this.personRepository = personRepository;
-		this.organizationService = organizationService;
-		this.personOrganizationRepository = personOrganizationRepository;
-		this.identityDocumentTypeRepository = identityDocumentTypeRepository;
-		this.postalCodesRepository = postalCodesRepository;
-	}
+	private final OrganizationService organizationService;
+	private final PersonRepository personRepository;
+	private final PersonOrganizationRepository personOrganizationRepository;
+	private final IdentityDocumentTypeRepository identityDocumentTypeRepository;
+	private final PostalCodesRepository postalCodesRepository;
+	private final CustomConstraintNameResolver defaultConstraintNameResolver;
 
 	@Override
 	public Optional<Persona> findById(Long id) {
@@ -128,7 +119,7 @@ public class PersonServiceImpl implements PersonService {
 
 	@Override
 	public void checkPersonIsPresentBehaviour(Persona persona, DataIntegrityViolationException e) {
-		Optional<Entry<String, String>> constraint = DatabaseConstraintUtils.getConstraintName(e);
+		Optional<Entry<String, String>> constraint = defaultConstraintNameResolver.getConstraintName(ExceptionUtils.getRootCauseMessage(e));
 
 		if (constraint.isPresent() && constraint.get().getValue().equalsIgnoreCase("exception.person.already.exists")) {
 			log.debug("Si, es una exception del tipo que ya existe, que hacemos?");

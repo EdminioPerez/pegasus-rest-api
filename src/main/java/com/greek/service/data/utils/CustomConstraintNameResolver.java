@@ -1,19 +1,20 @@
-package com.greek.service.utils;
+/* AssentSoftware (C)2021 */
+package com.greek.service.data.utils;
 
+import com.gvt.data.transformer.ContraintsNameResolver;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Optional;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.stereotype.Component;
 
-import org.apache.commons.lang3.exception.ExceptionUtils;
-import org.springframework.dao.DataIntegrityViolationException;
+@Component
+public class CustomConstraintNameResolver implements ContraintsNameResolver {
 
-import io.micrometer.core.instrument.util.StringUtils;
+    private static Map<String, String> constraintCodeMap = new HashMap<>();
 
-public class DatabaseConstraintUtils {
-
-	private static Map<String, String> constraintCodeMap = new HashMap<>();
-
-	static {
+    static {
 		constraintCodeMap.put("uq_cedula_id_categoria_persona_id_organizacion",
 				"exception.document.identification.exists");
 		constraintCodeMap.put("fk_id_ubicacion_geografica_nacimiento_from_persona",
@@ -28,18 +29,14 @@ public class DatabaseConstraintUtils {
 		constraintCodeMap.put("uq_person_global_identification", "exception.person.already.exists");
 	}
 
-	private DatabaseConstraintUtils() {
-		// Utility class
-	}
+    @Override
+    public Optional<Entry<String, String>> getConstraintName(String constraintMessage) {
+        if (StringUtils.isNotBlank(constraintMessage)) {
+            return constraintCodeMap.entrySet().stream()
+                    .filter(it -> constraintMessage.contains(it.getKey()))
+                    .findFirst();
+        }
 
-	public static Optional<Map.Entry<String, String>> getConstraintName(DataIntegrityViolationException ex) {
-		String rootMsg = ExceptionUtils.getRootCause(ex).getMessage();
-
-		if (StringUtils.isNotBlank(rootMsg)) {
-			return constraintCodeMap.entrySet().stream().filter(it -> rootMsg.contains(it.getKey())).findAny();
-		}
-
-		return Optional.empty();
-	}
-
+        return Optional.empty();
+    }
 }

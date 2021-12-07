@@ -12,18 +12,18 @@ import org.mapstruct.MappingTarget;
 import org.mapstruct.Named;
 import org.mapstruct.NullValuePropertyMappingStrategy;
 
-import com.greek.commons.dto.v1.person.PersonDTO;
-import com.greek.commons.dto.v1.person.PersonListDTO;
+import com.greek.commons.dto.v1.person.PersonDto;
+import com.greek.commons.dto.v1.person.PersonListDto;
 import com.greek.main.hibernate.model.Persona;
 import com.greek.service.mappers.decorators.PersonMapperDecorator;
-import com.gvt.core.reflect.ReflectionUtils;
+import com.gvt.core.reflect.FieldConverter;
 import com.gvt.rest.crud.mappers.EntityMapper;
 
 @Mapper(componentModel = "spring")
 @DecoratedWith(PersonMapperDecorator.class)
-public abstract class PersonMapper implements EntityMapper<PersonDTO, PersonListDTO, Persona> {
+public abstract class PersonMapper implements EntityMapper<PersonDto, PersonListDto, Persona> {
 
-	@Named("fromDTOToEntity")
+	@Named("fromDtoToEntity")
 	@Mapping(source = "code", target = "codigoPersona")
 	@Mapping(source = "name", target = "nombrePersona")
 	@Mapping(source = "lastName", target = "apellidoPersona")
@@ -41,62 +41,62 @@ public abstract class PersonMapper implements EntityMapper<PersonDTO, PersonList
 	@Mapping(source = "sexId", target = "sexo.id")
 	@Mapping(source = "bloodGroupId", target = "tipoSangre.id")
 	@Mapping(source = "countryBirthId", target = "ubicacionGeograficaByIdUbicacionGeograficaNacimiento.id")
-	public abstract Persona fromDTOToEntity(PersonDTO personDTO);
+	public abstract Persona fromDtoToEntity(PersonDto personDto);
 
-	@Named("fromDTOToEntityForSave")
+	@Named("fromDtoToEntityForSave")
 	@Mapping(target = "id", ignore = true)
 	@Mapping(target = "version", ignore = true)
 	@Mapping(target = "codigoPersona", ignore = true)
-	@InheritConfiguration(name = "fromDTOToEntity")
-	public abstract Persona fromDTOToEntityForSave(PersonDTO personDTO);
+	@InheritConfiguration(name = "fromDtoToEntity")
+	public abstract Persona fromDtoToEntityForSave(PersonDto personDto);
 
-	@InheritInverseConfiguration(name = "fromDTOToEntity")
-	public abstract PersonDTO fromEntityToDTO(Persona persona);
+	@InheritInverseConfiguration(name = "fromDtoToEntity")
+	public abstract PersonDto fromEntityToDto(Persona persona);
 
 	@BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.SET_TO_NULL)
 	@Mapping(target = "id", ignore = true)
 	@Mapping(target = "codigoPersona", ignore = true)
-	@InheritConfiguration(name = "fromDTOToEntity")
-	public abstract Persona mergeDTOIntoEntity(PersonDTO personDTO, @MappingTarget Persona persona);
+	@InheritConfiguration(name = "fromDtoToEntity")
+	public abstract Persona mergeDtoIntoEntity(PersonDto personDto, @MappingTarget Persona persona);
 
 	@BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
 	@Mapping(target = "id", ignore = true)
 	@Mapping(target = "codigoPersona", ignore = true)
 	@Mapping(source = "bloodGroupId", target = "tipoSangre.id", nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
 	@Mapping(source = "sexId", target = "sexo.id", nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
-	@InheritConfiguration(name = "fromDTOToEntity")
-	public abstract Persona patchDTOIntoEntity(PersonDTO personDTO, @MappingTarget Persona persona);
+	@InheritConfiguration(name = "fromDtoToEntity")
+	public abstract Persona patchDtoIntoEntity(PersonDto personDto, @MappingTarget Persona persona);
 
 	@Mapping(source = "nombrePersona", target = "name")
 	@Mapping(source = "apellidoPersona", target = "lastName")
-	public abstract PersonListDTO fromEntityToListDTO(Persona persona);
+	public abstract PersonListDto fromEntityToListDto(Persona persona);
 
 	@BeforeMapping
-	public void doBeforeMapping(@MappingTarget Persona persona, PersonDTO personDTO) {
+	public void doBeforeMapping(@MappingTarget Persona persona, PersonDto personDto) {
 
-		if (personDTO.getBloodGroupId() != null) {
+		if (personDto.getBloodGroupId() != null) {
 			persona.setTipoSangre(null);
 		}
 
-		if (personDTO.getSexId() != null) {
+		if (personDto.getSexId() != null) {
 			persona.setSexo(null);
 		}
 
-		if (personDTO.getIdentityDocumentTypeId() != null) {
+		if (personDto.getIdentityDocumentTypeId() != null) {
 			persona.setTipoDocumentoIdentificacion(null);
 		}
 
-		if (personDTO.getPostalCodeId() != null) {
+		if (personDto.getPostalCodeId() != null) {
 			persona.setCodigoPostal(null);
 		}
 
-		if (personDTO.getCountryBirthId() != null) {
+		if (personDto.getCountryBirthId() != null) {
 			persona.setUbicacionGeograficaByIdUbicacionGeograficaNacimiento(null);
 		}
 	}
 
 	@AfterMapping
-	public void doAfterMapping(@MappingTarget Persona persona, PersonDTO personDTO) {
+	public void doAfterMapping(@MappingTarget Persona persona, PersonDto personDto) {
 		persona.setNombreContactoUno(null);
 		persona.setTelefonoContactoUno(null);
 		persona.setParentescoContactoUno(null);
@@ -106,36 +106,36 @@ public abstract class PersonMapper implements EntityMapper<PersonDTO, PersonList
 		persona.setParentescoContactoDos(null);
 
 		if (persona.getSexo() != null && (persona.getSexo().getId() == null
-				|| persona.getSexo().getId().equals(ReflectionUtils.getDeleteCodeForCombosValue()))) {
+				|| persona.getSexo().getId().equals(FieldConverter.getDeleteCodeForCombosValue()))) {
 			persona.setSexo(null);
 		}
 
 		if (persona.getTipoSangre() != null && (persona.getTipoSangre().getId() == null
-				|| persona.getTipoSangre().getId().equals(ReflectionUtils.getDeleteCodeForCombosValue()))) {
+				|| persona.getTipoSangre().getId().equals(FieldConverter.getDeleteCodeForCombosValue()))) {
 			persona.setTipoSangre(null);
 		}
 
 		if (persona.getTipoDocumentoIdentificacion() != null
 				&& (persona.getTipoDocumentoIdentificacion().getId() == null || persona.getTipoDocumentoIdentificacion()
-						.getId().equals(ReflectionUtils.getDeleteCodeForCombosValue()))) {
+						.getId().equals(FieldConverter.getDeleteCodeForCombosValue()))) {
 			persona.setTipoDocumentoIdentificacion(null);
 		}
 
 		if (persona.getCodigoPostal() != null && (persona.getCodigoPostal().getId() == null
-				|| persona.getCodigoPostal().getId().equals(ReflectionUtils.getDeleteCodeForCombosValue()))) {
+				|| persona.getCodigoPostal().getId().equals(FieldConverter.getDeleteCodeForCombosValue()))) {
 			persona.setCodigoPostal(null);
 		}
 
 		if (persona.getUbicacionGeograficaByIdUbicacionGeograficaNacimiento() != null
 				&& (persona.getUbicacionGeograficaByIdUbicacionGeograficaNacimiento().getId() == null
 						|| persona.getUbicacionGeograficaByIdUbicacionGeograficaNacimiento().getId()
-								.equals(ReflectionUtils.getDeleteCodeForCombosValue()))) {
+								.equals(FieldConverter.getDeleteCodeForCombosValue()))) {
 			persona.setUbicacionGeograficaByIdUbicacionGeograficaNacimiento(null);
 		}
 	}
 
 	@AfterMapping
-	public void doAfterMapping(@MappingTarget PersonDTO personDTO, Persona persona) {
+	public void doAfterMapping(@MappingTarget PersonDto personDto, Persona persona) {
 	}
 
 }

@@ -9,8 +9,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.greek.commons.dto.v1.person.PersonDTO;
-import com.greek.commons.dto.v1.person.PersonListDTO;
+import com.greek.commons.dto.v1.person.PersonDto;
+import com.greek.commons.dto.v1.person.PersonListDto;
 import com.greek.main.hibernate.model.CodigoPostal;
 import com.greek.main.hibernate.model.Persona;
 import com.greek.service.manager.PersonService;
@@ -23,11 +23,11 @@ import lombok.extern.slf4j.Slf4j;
 @RestController
 @RequestMapping("/api/v1/persons")
 @Slf4j
-public class PersonRestController extends CrudRestController<PersonDTO, PersonListDTO, Persona> {
+public class PersonRestController extends CrudRestController<PersonDto, PersonListDto, Persona> {
 
-	private SimpleDomainService simpleDomainService;
-	private PersonService personService;
-	private PersonMapper personMapper;
+	private final SimpleDomainService simpleDomainService;
+	private final PersonService personService;
+	private final PersonMapper personMapper;
 
 	public PersonRestController(PersonService personService, SimpleDomainService simpleDomainService,
 			PersonMapper personMapper, Validator validator) {
@@ -39,30 +39,30 @@ public class PersonRestController extends CrudRestController<PersonDTO, PersonLi
 	}
 
 	@Override
-	public PersonDTO save(@RequestBody @Valid PersonDTO dto) {
-		PersonDTO savedPersonDTO = null;
+	public PersonDto save(@RequestBody @Valid PersonDto dto) {
+		PersonDto savedPersonDto = null;
 
 		try {
-			Persona personEntity = personService.save(personMapper.fromDTOToEntityForSave(dto));
-			savedPersonDTO = personMapper.fromEntityToDTO(personEntity);
+			Persona personEntity = personService.save(personMapper.fromDtoToEntityForSave(dto));
+			savedPersonDto = personMapper.fromEntityToDto(personEntity);
 
-			savedPersonDTO.setProvinceId(personEntity.getCodigoPostal().getProvincia().getId());
-			savedPersonDTO.setMunicipalityId(personEntity.getCodigoPostal().getPoblacion().getId());
+			savedPersonDto.setProvinceId(personEntity.getCodigoPostal().getProvincia().getId());
+			savedPersonDto.setMunicipalityId(personEntity.getCodigoPostal().getPoblacion().getId());
 		} catch (DataIntegrityViolationException e) {
-			personService.checkPersonIsPresentBehaviour(personMapper.fromDTOToEntityForSave(dto), e);
+			personService.checkPersonIsPresentBehaviour(personMapper.fromDtoToEntityForSave(dto), e);
 		}
 
-//		if (savedPersonDTO != null) {
-//			savedPersonDTO.setProvinceId(dto.getProvinceId());
-//			savedPersonDTO.setMunicipalityId(dto.getMunicipalityId());
+//		if (savedPersonDto != null) {
+//			savedPersonDto.setProvinceId(dto.getProvinceId());
+//			savedPersonDto.setMunicipalityId(dto.getMunicipalityId());
 //		}
 
-		return savedPersonDTO;
+		return savedPersonDto;
 	}
 
 	@Override
-	public PersonDTO patch(@PathVariable("id") Long id, @RequestBody PersonDTO dto) {
-		PersonDTO updatedEntity = super.patch(id, dto);
+	public PersonDto patch(@PathVariable("id") Long id, @RequestBody PersonDto dto) {
+		PersonDto updatedEntity = super.patch(id, dto);
 
 		CodigoPostal postalCode = simpleDomainService.findPostalCodeById(updatedEntity.getPostalCodeId());
 

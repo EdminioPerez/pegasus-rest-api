@@ -4,34 +4,32 @@ import java.util.List;
 
 import org.springframework.web.bind.annotation.RestController;
 
-import com.greek.commons.dto.v1.simple.SimpleDTO;
+import com.greek.commons.dto.v1.simple.SimpleDto;
 import com.greek.service.manager.SimpleDomainService;
 import com.greek.service.mappers.SimpleDomainMapper;
-import com.greek.service.rest.api.PostalCodesRestAPI;
+import com.greek.service.rest.api.PostalCodesRestApi;
+
+import lombok.RequiredArgsConstructor;
 
 @RestController
-public class PostalCodesRestController implements PostalCodesRestAPI {
+@RequiredArgsConstructor
+public class PostalCodesRestController implements PostalCodesRestApi {
 
-	private SimpleDomainService simpleDomainService;
-	private SimpleDomainMapper simpleDomainMapper;
-
-	public PostalCodesRestController(SimpleDomainService simpleDomainService, SimpleDomainMapper simpleDomainMapper) {
-		this.simpleDomainService = simpleDomainService;
-		this.simpleDomainMapper = simpleDomainMapper;
-	}
+	private final SimpleDomainService simpleDomainService;
+	private final SimpleDomainMapper simpleDomainMapper;
 
 	@Override
-	public List<SimpleDTO> getProvinces() {
+	public List<SimpleDto> getProvinces() {
 		return simpleDomainMapper.fromProvinceToDtos(simpleDomainService.findProvinces());
 	}
 
 	@Override
-	public List<SimpleDTO> getMunicipalities(Long provinceId) {
+	public List<SimpleDto> getMunicipalities(Long provinceId) {
 		return simpleDomainMapper.fromMunicipalityToDtos(simpleDomainService.findMunicipalities(provinceId));
 	}
 
 	@Override
-	public List<SimpleDTO> getPostalCodes(Long provinceId, Long municipalityId) {
+	public List<SimpleDto> getPostalCodes(Long provinceId, Long municipalityId) {
 		return simpleDomainMapper
 				.fromPostalCodesToDtos(simpleDomainService.findPostalCodes(provinceId, municipalityId));
 	}
