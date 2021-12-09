@@ -14,10 +14,10 @@ public interface IdentityDocumentTypeRepository
         extends JpaRepository<TipoDocumentoIdentificacion, Long> {
 
     @Query(
-            "from TipoDocumentoIdentificacion p where p.ubicacionGeografica.codigoUbicacionGeografica = :#{authentication.details.countryCode}")
+            "from TipoDocumentoIdentificacion p where p.ubicacionGeografica.codigoUbicacionGeografica = :#{authentication.countryCode}")
     List<TipoDocumentoIdentificacion> findAll();
 
     @Query(
-            "from TipoDocumentoIdentificacion p where p.id = :id and p.ubicacionGeografica.codigoUbicacionGeografica = :#{authentication.details.countryCode}")
+            "from TipoDocumentoIdentificacion p where p.id = :id and p.ubicacionGeografica.codigoUbicacionGeografica = :#{authentication.countryCode}")
     Optional<TipoDocumentoIdentificacion> findById(@Param("id") Long id);
 }

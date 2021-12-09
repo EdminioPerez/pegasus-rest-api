@@ -10,17 +10,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import com.github.javafaker.Faker;
-import com.greek.service.TestRestServicesApplication;
-import com.greek.service.exceptions.PersonAlreadyExistsDifferentOrganizationException;
-import com.greek.service.exceptions.PersonAlreadyExistsSameOrganizationException;
-import com.greek.service.manager.PersonService;
-import com.greek.service.manager.SimpleDomainService;
-import com.greek.service.mappers.PersonMapperImpl_;
-import com.greek.service.utils.ObjectsBuilderUtils;
-import com.gvt.security.SecurityOAuth2Configuration;
-import com.gvt.security.test.context.support.WithMockedUser;
 import java.util.Locale;
+
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,24 +20,38 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.MediaType;
-import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.github.javafaker.Faker;
+import com.greek.service.TestRestServicesApplication;
+import com.greek.service.exceptions.PersonAlreadyExistsDifferentOrganizationException;
+import com.greek.service.exceptions.PersonAlreadyExistsSameOrganizationException;
+import com.greek.service.manager.PersonService;
+import com.greek.service.manager.SimpleDomainService;
+import com.greek.service.mappers.PersonMapperImpl_;
+import com.greek.service.utils.ObjectsBuilderUtils;
+import com.gvt.rest.RestServicesConfiguration;
+import com.gvt.rest.config.JsonConfiguration;
+import com.gvt.rest.context.properties.RestConfigParameters;
+import com.gvt.security.SecurityOAuth2Configuration;
+import com.gvt.security.test.context.support.WithMockedUser;
+
 @ExtendWith(SpringExtension.class)
 @WebMvcTest(controllers = {PersonRestController.class})
 @ContextConfiguration(
-        classes = {TestRestServicesApplication.class, SecurityOAuth2Configuration.class})
-@TestPropertySource({"classpath:application.properties"})
+        classes = {TestRestServicesApplication.class, SecurityOAuth2Configuration.class, RestServicesConfiguration.class})
+//@TestPropertySource({"classpath:application.properties"})
 @Import({PersonMapperImpl_.class})
-@WithMockedUser
+//@WithMockedUser
 public class PersonRestControllerTest {
 
     @Autowired private MockMvc mockMvc;
 
-    @Autowired private MappingJackson2HttpMessageConverter mappingJackson2HttpMessageConverter;
+    @Autowired private ObjectMapper objectMapper;
 
     @MockBean private PersonService personService;
 
@@ -64,8 +69,8 @@ public class PersonRestControllerTest {
         mockMvc.perform(
                         post("/api/v1/persons")
                                 .content(
-                                        mappingJackson2HttpMessageConverter
-                                                .getObjectMapper()
+                                        objectMapper
+                                                
                                                 .writeValueAsString(
                                                         ObjectsBuilderUtils.createFullPersonDto(
                                                                 faker)))
@@ -92,8 +97,8 @@ public class PersonRestControllerTest {
         mockMvc.perform(
                         post("/api/v1/persons")
                                 .content(
-                                        mappingJackson2HttpMessageConverter
-                                                .getObjectMapper()
+                                        objectMapper
+                                                
                                                 .writeValueAsString(
                                                         ObjectsBuilderUtils.createFullPersonDto(
                                                                 faker)))

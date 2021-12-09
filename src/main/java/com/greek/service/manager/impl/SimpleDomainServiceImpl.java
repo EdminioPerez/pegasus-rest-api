@@ -97,9 +97,9 @@ public class SimpleDomainServiceImpl implements SimpleDomainService {
                             LocaleContextHolder.getLocale()));
         }
 
-        ubicacionGeograficaItems.sort(
-                Comparator.comparing(
-                        UbicacionGeografica::getNombreUbicacionGeografica, Collator.getInstance()));
+//        ubicacionGeograficaItems.sort(
+//                Comparator.comparing(
+//                        UbicacionGeografica::getNombreUbicacionGeografica, Collator.getInstance()));
 
         return ubicacionGeograficaItems;
     }
