@@ -3,6 +3,7 @@ package com.greek.service.security.utils;
 
 import com.greek.main.hibernate.model.Organizacion;
 import com.gvt.core.exceptions.LogicException;
+import com.gvt.security.jwt.utils.JwtUtils;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -14,23 +15,22 @@ public final class AuthenticationUtils {
 
     public static Organizacion getCurrentGroup() {
         Organizacion currentOrganization = new Organizacion();
-        //		currentOrganization.setId(JwtUtils.getJwtAuthenticationDetails().getRootCenterId());
+        currentOrganization.setId(JwtUtils.getRootCenterId());
 
         return currentOrganization;
     }
 
     public static String getCurrentUserCountryCode() {
-        //		return JwtUtils.getJwtAuthenticationDetails().getCountryCode();
-        return "es";
+        return JwtUtils.getCountryCode();
     }
 
     public static void checkValidOrganizationIdInToken(Long idToSearch) {
-        //		for (Long centerId : JwtUtils.getJwtAuthenticationDetails().getCentersIds()) {
-        //			log.trace("Comparing idToSearch:{} with {}", idToSearch, centerId);
-        //			if (idToSearch.equals(centerId)) {
-        //				return;
-        //			}
-        //		}
+        for (Long centerId : JwtUtils.getCentersIds()) {
+            log.trace("Comparing idToSearch:{} with {}", idToSearch, centerId);
+            if (idToSearch.equals(centerId)) {
+                return;
+            }
+        }
 
         throw new LogicException("Token integrity violation", "error.security.token.integrity");
     }
@@ -45,12 +45,9 @@ public final class AuthenticationUtils {
             currentOrganization = currentOrganization.getOrganizacion();
         }
 
-        //		if (currentOrganization.getId().longValue() !=
-        // JwtUtils.getJwtAuthenticationDetails().getRootCenterId()
-        //				.longValue()) {
-        //			throw new LogicException("Token integrity violation",
-        // "error.security.token.integrity");
-        //		}
+        if (currentOrganization.getId().longValue() != JwtUtils.getRootCenterId().longValue()) {
+            throw new LogicException("Token integrity violation", "error.security.token.integrity");
+        }
 
         return currentOrganization;
     }

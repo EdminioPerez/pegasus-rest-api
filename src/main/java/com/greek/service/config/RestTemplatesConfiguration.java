@@ -1,9 +1,11 @@
 /* AssentSoftware (C)2021 */
 package com.greek.service.config;
 
+import com.gvt.rest.http.client.LocaleHeaderInterceptor;
+import com.gvt.rest.web.client.CustomResponseErrorHandler;
+import com.gvt.security.http.client.AuthorizationHeaderInterceptor;
 import java.util.ArrayList;
 import java.util.List;
-
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.client.ClientHttpRequestFactory;
@@ -12,10 +14,6 @@ import org.springframework.http.converter.json.MappingJackson2HttpMessageConvert
 import org.springframework.web.client.RestTemplate;
 import org.zalando.logbook.Logbook;
 import org.zalando.logbook.spring.LogbookClientHttpRequestInterceptor;
-
-import com.gvt.rest.http.client.LocaleHeaderInterceptor;
-import com.gvt.rest.web.client.CustomResponseErrorHandler;
-import com.gvt.security.http.client.AuthorizationHeaderInterceptor;
 
 @Configuration
 public class RestTemplatesConfiguration {
@@ -38,7 +36,7 @@ public class RestTemplatesConfiguration {
                         mappingJackson2HttpMessageConverter.getObjectMapper()));
         restTemplate.setMessageConverters(messageConverters);
         restTemplate.getInterceptors().add(new LocaleHeaderInterceptor());
-        		restTemplate.getInterceptors().add(new AuthorizationHeaderInterceptor());
+        restTemplate.getInterceptors().add(new AuthorizationHeaderInterceptor());
         restTemplate.getInterceptors().add(new LogbookClientHttpRequestInterceptor(logbook));
         //		restTemplate.getInterceptors().add(new LoggerInterceptor());
 

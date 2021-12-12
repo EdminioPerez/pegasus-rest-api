@@ -13,11 +13,11 @@ import org.springframework.stereotype.Repository;
 public interface PostalCodesRepository extends JpaRepository<CodigoPostal, Long> {
 
     @Query(
-            "from CodigoPostal cp where cp.provincia.id = :provinciaId and cp.poblacion.id = :poblacionId and cp.ubicacionGeografica.codigoUbicacionGeografica = :#{authentication.details.countryCode} order by cp.codigoPostal asc")
+            "from CodigoPostal cp where cp.provincia.id = :provinciaId and cp.poblacion.id = :poblacionId and cp.ubicacionGeografica.codigoUbicacionGeografica = :#{authentication.countryCode} order by cp.codigoPostal asc")
     List<CodigoPostal> findAll(
             @Param("provinciaId") Long provinciaId, @Param("poblacionId") Long poblacionId);
 
     @Query(
-            "from CodigoPostal p where p.id = :id and p.ubicacionGeografica.codigoUbicacionGeografica = :#{authentication.details.countryCode}")
+            "from CodigoPostal p where p.id = :id and p.ubicacionGeografica.codigoUbicacionGeografica = :#{authentication.countryCode}")
     Optional<CodigoPostal> findById(@Param("id") Long id);
 }

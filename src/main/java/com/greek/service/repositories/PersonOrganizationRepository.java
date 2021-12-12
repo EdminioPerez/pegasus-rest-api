@@ -12,6 +12,6 @@ import org.springframework.stereotype.Repository;
 public interface PersonOrganizationRepository extends JpaRepository<PersonaOrganizacion, Long> {
 
     @Query(
-            "from PersonaOrganizacion p where p.persona.id = :personaId and p.organizacion.id = :#{principal.details.rootCenterId}")
+            "from PersonaOrganizacion p where p.persona.id = :personaId and p.organizacion.id = :#{authentication.rootCenterId}")
     Optional<PersonaOrganizacion> findByPersonaId(@Param("personaId") Long personaId);
 }

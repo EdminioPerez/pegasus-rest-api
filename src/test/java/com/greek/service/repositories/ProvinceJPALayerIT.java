@@ -5,28 +5,33 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 
 import com.greek.main.hibernate.model.Provincia;
-import com.gvt.data.JPAConfiguration;
-import com.gvt.data.security.support.SecurityEvaluationContextExtension;
+import com.greek.service.TestRestServicesApplication;
+import com.greek.service.security.jwt.converters.CustomClaimsConverter;
+import com.gvt.security.SecurityOAuth2Configuration;
 import com.gvt.security.test.context.support.WithMockedUser;
 import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
-import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
+import org.springframework.boot.autoconfigure.domain.EntityScan;
+import org.springframework.boot.autoconfigure.security.oauth2.resource.OAuth2ResourceServerProperties;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(
         classes = {
-            JPAConfiguration.class,
-            DataSourceAutoConfiguration.class,
-            SecurityEvaluationContextExtension.class
+            TestRestServicesApplication.class,
+            SecurityOAuth2Configuration.class,
+            OAuth2ResourceServerProperties.class,
+            CustomClaimsConverter.class
         })
-@EnableJpaRepositories(basePackages = {"com.greek.service.repositories"})
-@TestPropertySource({"classpath:application.properties"})
+@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
+@EntityScan(basePackages = {"com.greek.main.hibernate.model"})
+// @Import(value = { })
+@DataJpaTest
 @WithMockedUser
 public class ProvinceJPALayerIT {
 

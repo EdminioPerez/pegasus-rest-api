@@ -8,10 +8,8 @@ import com.github.javafaker.Faker;
 import com.greek.commons.dto.v1.user.ClientDto;
 import com.greek.commons.dto.v1.user.SystemUserDto;
 import com.greek.main.hibernate.model.Organizacion;
+import com.greek.service.TestRestServicesApplication;
 import com.greek.service.manager.UserService;
-import com.gvt.data.JPAConfiguration;
-import com.gvt.data.security.support.SecurityEvaluationContextExtension;
-import com.gvt.rest.RestServicesConfiguration;
 import com.gvt.security.test.context.support.WithMockedUser;
 import java.util.List;
 import java.util.Locale;
@@ -21,24 +19,14 @@ import org.apache.commons.lang3.RandomStringUtils;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
-import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
+import org.springframework.boot.autoconfigure.security.oauth2.resource.OAuth2ResourceServerProperties;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(
-        classes = {
-            JPAConfiguration.class,
-            DataSourceAutoConfiguration.class,
-            RestServicesConfiguration.class,
-            SecurityEvaluationContextExtension.class,
-            UserServiceImpl.class,
-            PersonServiceImpl.class,
-            OrganizationServiceImpl.class
-        })
-@EnableJpaRepositories(basePackages = {"com.greek.service.repositories"})
+        classes = {TestRestServicesApplication.class, OAuth2ResourceServerProperties.class})
 @TestPropertySource({"classpath:application.properties"})
 @WithMockedUser
 @Slf4j

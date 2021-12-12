@@ -6,7 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.github.javafaker.Faker;
 import com.greek.commons.dto.v1.person.PersonDto;
-import com.greek.service.RestServicesApplication;
+import com.greek.service.TestRestServicesApplication;
 import com.greek.service.utils.ObjectsBuilderUtils;
 import com.gvt.core.exceptions.DataIntegrityException;
 import com.gvt.core.reflect.FieldConverter;
@@ -44,9 +44,11 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(
-        classes = {RestServicesApplication.class},
+        classes = {TestRestServicesApplication.class},
         webEnvironment = WebEnvironment.RANDOM_PORT)
-@WithMockedUser
+@WithMockedUser(
+        rootCenterId = "4",
+        centersId = {"4", "5", "6"})
 @Slf4j
 public class PersonRestControllerIT {
 

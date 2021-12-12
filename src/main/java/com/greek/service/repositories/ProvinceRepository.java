@@ -11,6 +11,6 @@ import org.springframework.stereotype.Repository;
 public interface ProvinceRepository extends JpaRepository<Provincia, Long> {
 
     @Query(
-            "select distinct(p) from Provincia p inner join p.codigoPostals cp where cp.ubicacionGeografica.codigoUbicacionGeografica = :#{authentication.details.countryCode} order by p.nombreProvincia asc")
+            "select distinct(p) from Provincia p inner join p.codigoPostals cp where cp.ubicacionGeografica.codigoUbicacionGeografica = :#{authentication.countryCode} order by p.nombreProvincia asc")
     List<Provincia> findProvinces();
 }

@@ -10,21 +10,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import java.util.Locale;
-
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.context.annotation.Import;
-import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.http.MediaType;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.TestPropertySource;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
-import org.springframework.test.web.servlet.MockMvc;
-
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.javafaker.Faker;
 import com.greek.service.TestRestServicesApplication;
@@ -35,18 +20,29 @@ import com.greek.service.manager.SimpleDomainService;
 import com.greek.service.mappers.PersonMapperImpl_;
 import com.greek.service.utils.ObjectsBuilderUtils;
 import com.gvt.rest.RestServicesConfiguration;
-import com.gvt.rest.config.JsonConfiguration;
-import com.gvt.rest.context.properties.RestConfigParameters;
 import com.gvt.security.SecurityOAuth2Configuration;
-import com.gvt.security.test.context.support.WithMockedUser;
+import java.util.Locale;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.http.MediaType;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.springframework.test.web.servlet.MockMvc;
 
 @ExtendWith(SpringExtension.class)
 @WebMvcTest(controllers = {PersonRestController.class})
 @ContextConfiguration(
-        classes = {TestRestServicesApplication.class, SecurityOAuth2Configuration.class, RestServicesConfiguration.class})
-//@TestPropertySource({"classpath:application.properties"})
-@Import({PersonMapperImpl_.class})
-//@WithMockedUser
+        classes = {
+            PersonMapperImpl_.class,
+            TestRestServicesApplication.class,
+            SecurityOAuth2Configuration.class,
+            RestServicesConfiguration.class
+        })
+// @Import({PersonMapperImpl_.class})
 public class PersonRestControllerTest {
 
     @Autowired private MockMvc mockMvc;
@@ -69,15 +65,10 @@ public class PersonRestControllerTest {
         mockMvc.perform(
                         post("/api/v1/persons")
                                 .content(
-                                        objectMapper
-                                                
-                                                .writeValueAsString(
-                                                        ObjectsBuilderUtils.createFullPersonDto(
-                                                                faker)))
+                                        objectMapper.writeValueAsString(
+                                                ObjectsBuilderUtils.createFullPersonDto(faker)))
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .characterEncoding("UTF-8"))
-                //				.header(SecurityConstants.HEADER_AUTHORIZATION,
-                // JwtTestUtils.builJwtBearerFromMockUser()))
                 .andDo(print())
                 .andExpect(header().string("Content-Type", "application/json"))
                 .andExpect(
@@ -97,15 +88,10 @@ public class PersonRestControllerTest {
         mockMvc.perform(
                         post("/api/v1/persons")
                                 .content(
-                                        objectMapper
-                                                
-                                                .writeValueAsString(
-                                                        ObjectsBuilderUtils.createFullPersonDto(
-                                                                faker)))
+                                        objectMapper.writeValueAsString(
+                                                ObjectsBuilderUtils.createFullPersonDto(faker)))
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .characterEncoding("UTF-8"))
-                //				.header(SecurityConstants.HEADER_AUTHORIZATION,
-                // JwtTestUtils.builJwtBearerFromMockUser()))
                 .andDo(print())
                 .andExpect(header().string("Content-Type", "application/json"))
                 .andExpect(
