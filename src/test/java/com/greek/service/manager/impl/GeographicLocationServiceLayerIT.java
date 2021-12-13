@@ -23,7 +23,6 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 @ContextConfiguration(
         classes = {TestRestServicesApplication.class, OAuth2ResourceServerProperties.class})
 @TestPropertySource({"classpath:application.properties"})
-// @Import(value = {})
 @Slf4j
 public class GeographicLocationServiceLayerIT {
 

@@ -14,7 +14,7 @@ public final class AuthenticationUtils {
     }
 
     public static Organizacion getCurrentGroup() {
-        Organizacion currentOrganization = new Organizacion();
+        var currentOrganization = new Organizacion();
         currentOrganization.setId(JwtUtils.getRootCenterId());
 
         return currentOrganization;
@@ -38,7 +38,7 @@ public final class AuthenticationUtils {
     // This method must be called from inside a transaction
     // TODO This method could be moved to the gateway using a cache mechanism
     public static Organizacion belongsToRootOrganizationInToken(Organizacion organization) {
-        Organizacion currentOrganization = organization;
+        var currentOrganization = organization;
 
         while (currentOrganization.getOrganizacion() != null
                 && currentOrganization.getOrganizacion().getId() != null) {

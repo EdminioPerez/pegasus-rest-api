@@ -21,6 +21,7 @@ import com.greek.service.mappers.PersonMapperImpl_;
 import com.greek.service.utils.ObjectsBuilderUtils;
 import com.gvt.rest.RestServicesConfiguration;
 import com.gvt.security.SecurityOAuth2Configuration;
+import com.gvt.security.test.context.support.WithMockedUser;
 import java.util.Locale;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -37,12 +38,12 @@ import org.springframework.test.web.servlet.MockMvc;
 @WebMvcTest(controllers = {PersonRestController.class})
 @ContextConfiguration(
         classes = {
-            PersonMapperImpl_.class,
             TestRestServicesApplication.class,
             SecurityOAuth2Configuration.class,
-            RestServicesConfiguration.class
+            RestServicesConfiguration.class,
+            PersonMapperImpl_.class
         })
-// @Import({PersonMapperImpl_.class})
+@WithMockedUser
 public class PersonRestControllerTest {
 
     @Autowired private MockMvc mockMvc;

@@ -30,7 +30,6 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
         })
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @EntityScan(basePackages = {"com.greek.main.hibernate.model"})
-// @Import(value = {  })
 @DataJpaTest
 @WithMockedUser
 public class IdentityDocumentTypeJPALayerIT {

@@ -12,6 +12,6 @@ public class JwtSecurityConfiguration extends DefaultJwtSecurityConfiguration {
     protected void configure(HttpSecurity http) throws Exception {
         super.configure(http);
 
-        //		http.cors().and().csrf().disable().authorizeRequests().anyRequest().permitAll();
+        http.authorizeRequests().anyRequest().authenticated();
     }
 }

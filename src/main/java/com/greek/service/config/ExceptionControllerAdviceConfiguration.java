@@ -16,7 +16,6 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 @RestControllerAdvice
-// @Order(Ordered.HIGHEST_PRECEDENCE + 5)
 @RequiredArgsConstructor
 public class ExceptionControllerAdviceConfiguration {
 
@@ -72,43 +71,4 @@ public class ExceptionControllerAdviceConfiguration {
 
         return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
     }
-
-    //	@ExceptionHandler(DataIntegrityViolationException.class)
-    //	public ResponseEntity<ErrorResponse>
-    // dataIntegrityViolationExceptionHandler(DataIntegrityViolationException ex) {
-    //		log.error(DefaultJPAExceptionHandlerController.BUILDING_ERROR_RESPONSE, ex);
-    //
-    //		ErrorResponse error = null;
-    //
-    //		String rootMsg = ExceptionUtils.getRootCause(ex).getMessage();
-    //
-    //		if (StringUtils.isNotBlank(rootMsg)) {
-    //			Optional<Map.Entry<String, String>> entry = DatabaseConstraintUtils.getConstraintName(ex);
-    //
-    //			if (entry.isPresent()) {
-    //				try {
-    //					error = new ErrorResponse(
-    //							messageSource.getMessage(entry.get().getValue(), null,
-    // LocaleContextHolder.getLocale()),
-    //							entry.get().getValue(), "8000");
-    //				} catch (NoSuchMessageException e) {
-    //					error = new ErrorResponse(rootMsg, entry.get().getValue(), "8000");
-    //				}
-    //			} else {
-    //				error = new ErrorResponse(rootMsg, "exception.constraint.translation.undefined", "8000");
-    //			}
-    //		} else {
-    //			new ErrorResponse("Data integrity with unknown constraint",
-    // "exception.constraint.undefined", "8000");
-    //		}
-    //
-    //		HttpServletRequest currentRequest = RequestUtils.getCurrentHttpRequest();
-    //		if (currentRequest != null) {
-    //			error.setPath(currentRequest.getRequestURI());
-    //			error.setMethod(currentRequest.getMethod());
-    //		}
-    //
-    //		return new ResponseEntity<>(error, HttpStatus.UNPROCESSABLE_ENTITY);
-    //	}
-
 }
