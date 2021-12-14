@@ -220,4 +220,10 @@ public class PersonServiceImpl implements PersonService {
 
         return null;
     }
+
+	@Override
+	public void delete(Persona entityToUpdate) {
+		// TODO Auto-generated method stub
+		
+	}
 }
