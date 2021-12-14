@@ -11,7 +11,6 @@ import com.greek.service.mappers.PersonMapper;
 import com.gvt.rest.crud.controllers.CrudRestController;
 import javax.validation.Valid;
 import javax.validation.Validator;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -20,7 +19,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/api/v1/persons")
-@Slf4j
 public class PersonRestController extends CrudRestController<PersonDto, PersonListDto, Persona> {
 
     private final SimpleDomainService simpleDomainService;

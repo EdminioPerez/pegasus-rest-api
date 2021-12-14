@@ -38,7 +38,6 @@ public class RestTemplatesConfiguration {
         restTemplate.getInterceptors().add(new LocaleHeaderInterceptor());
         restTemplate.getInterceptors().add(new AuthorizationHeaderInterceptor());
         restTemplate.getInterceptors().add(new LogbookClientHttpRequestInterceptor(logbook));
-        //		restTemplate.getInterceptors().add(new LoggerInterceptor());
 
         return restTemplate;
     }

@@ -45,18 +45,6 @@ public class UserServiceImpl implements UserService {
     private final UserRoleRepository userRolRepository;
     private final Translator translator;
 
-    //	public UserServiceImpl(UserRepository userRepository, OrganizationRepository
-    // organizationRepository,
-    //			UserOrganizationRepository userOrganizationRepository, UserRoleRepository
-    // userRolRepository,
-    //			PersonService personService, Translator translator) {
-    //		this.userRepository = userRepository;
-    //		this.organizationRepository = organizationRepository;
-    //		this.personService = personService;
-    //		this.userOrganizationRepository = userOrganizationRepository;
-    //		this.userRolRepository = userRolRepository;
-    //	}
-
     @Override
     @Transactional(readOnly = false)
     public List<Organizacion> createUser(

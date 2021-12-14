@@ -4,6 +4,7 @@ package com.greek.service.security.utils;
 import com.greek.main.hibernate.model.Organizacion;
 import com.gvt.core.exceptions.LogicException;
 import com.gvt.security.jwt.utils.JwtUtils;
+import java.util.Arrays;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -25,14 +26,12 @@ public final class AuthenticationUtils {
     }
 
     public static void checkValidOrganizationIdInToken(Long idToSearch) {
-        for (Long centerId : JwtUtils.getCentersIds()) {
-            log.trace("Comparing idToSearch:{} with {}", idToSearch, centerId);
-            if (idToSearch.equals(centerId)) {
-                return;
-            }
-        }
+        boolean idToSearchExists =
+                Arrays.stream(JwtUtils.getCentersIds()).anyMatch(idToSearch::equals);
 
-        throw new LogicException("Token integrity violation", "error.security.token.integrity");
+        if (!idToSearchExists) {
+            throw new LogicException("Token integrity violation", "error.security.token.integrity");
+        }
     }
 
     // This method must be called from inside a transaction

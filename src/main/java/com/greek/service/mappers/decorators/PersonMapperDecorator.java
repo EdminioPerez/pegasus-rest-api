@@ -20,7 +20,6 @@ public abstract class PersonMapperDecorator extends PersonMapper {
     public Persona patchDtoIntoEntity(PersonDto personDto, Persona persona) {
         delegate.patchDtoIntoEntity(personDto, persona);
 
-        //		FieldConverter fieldConverter = new FieldConverter();
         fieldConverter.replaceFieldsToRemove(persona);
 
         return persona;
