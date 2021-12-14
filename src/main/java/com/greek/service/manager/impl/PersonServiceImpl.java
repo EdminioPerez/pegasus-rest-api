@@ -221,9 +221,9 @@ public class PersonServiceImpl implements PersonService {
         return null;
     }
 
-	@Override
-	public void delete(Persona entityToUpdate) {
-		// TODO Auto-generated method stub
-		
-	}
+    @Override
+    public void delete(Persona entityToDelete) {
+        // TODO Auto-generated method stub
+
+    }
 }
