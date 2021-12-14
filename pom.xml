@@ -39,7 +39,6 @@
 			<version>1.0.0-SNAPSHOT</version>
 		</dependency>
 
-		<!-- This and the logboook spring starter to a new lib for logging -->
 		<dependency>
 			<groupId>org.projectlombok</groupId>
 			<artifactId>lombok</artifactId>

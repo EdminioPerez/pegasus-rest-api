@@ -9,7 +9,7 @@ ENV PROFILE dev
 
 ENV EUREKA_SERVER_URL http://192.168.0.104:8762/eureka/
 
-ENV DATASOURCE_URL jdbc:postgresql://localhost:5436/pegasus_dev
+ENV DATASOURCE_URL jdbc:postgresql://192.168.0.104:5436/pegasus_dev
 ENV DATASOURCE_DRIVER_CLASS_NAME org.postgresql.Driver
 ENV DATASOURCE_USERNAME pegasus_dev
 ENV DATASOURCE_PASSWORD 1234
@@ -24,7 +24,7 @@ ENV STANDALONE_RUN false
 
 ENV PROXY_OPTS "" 
 ENV REGION_OPTS -Duser.timezone=UTC -Duser.language=en
-ENV JAVA_OPTS "-noverify -Xms256m -Xmx256m -Xss256k -XX:+UnlockExperimentalVMOptions -XX:+UseZGC -XX:+UseStringDeduplication -XX:+OptimizeStringConcat -Djava.net.preferIPv4Stack=true -Dfile.encoding=UTF-8 $PROXY_OPTS $REGION_OPTS -server"
+ENV JAVA_OPTS "-noverify -Xms256m -Xmx256m -Xss256k -XX:+UseCompressedOops -XX:+UseZGC -XX:+UseStringDeduplication -XX:+OptimizeStringConcat -XX:MaxGCPauseMillis=200 -XX:InitiatingHeapOccupancyPercent=70 -Djava.net.preferIPv4Stack=true -Dfile.encoding=UTF-8 -server $PROXY_OPTS $REGION_OPTS"
 
 RUN echo 'root:Docker!' | chpasswd
 

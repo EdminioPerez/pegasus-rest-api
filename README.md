@@ -1,4 +1,4 @@
-# Template for a microservice application with SpringBoot 2.4.x
+# Template for a microservice application with SpringBoot 2.6.x
 
 Template for web application with Spring 5
 It provides support for
@@ -69,12 +69,14 @@ You can find swagger in http[s]://[host]:[port]/[context]/swagger-ui.html
 Example:
 http://localhost:9191/bank/swagger-ui.html
 
+### Actuator
 You can find actuator in in http[s]://[host]:[port]/actuator
 
 Example:
 http://localhost:9191/actuator/health
 http://localhost:9191/actuator/info
 
+### Simon console
 Simon console is for monitoring response times of every endpoint, and
 you can find it in http[s]://[host]:[port]/performance-monitor/index.html
 
@@ -84,7 +86,7 @@ http://localhost:9191/performance-monitor/index.html
 ## Performance tips
 
 ### For the JVM (even in development mode)
--noverify -Xms256m -Xmx256m -Xss256k -XX:+UnlockExperimentalVMOptions -XX:+UseZGC -XX:+UseStringDeduplication -XX:+OptimizeStringConcat -Djava.net.preferIPv4Stack=true -Dfile.encoding=UTF-8 -Duser.timezone=UTC -Duser.language=en
+-noverify -Xms256m -Xmx256m -Xss256k -XX:+UseCompressedOops -XX:+UseZGC -XX:+UseStringDeduplication -XX:+OptimizeStringConcat -XX:MaxGCPauseMillis=200 -XX:InitiatingHeapOccupancyPercent=70 -Djava.net.preferIPv4Stack=true -Dfile.encoding=UTF-8 -Duser.timezone=UTC -Duser.language=en -server
 
 ### For the Docker
 Use adoptopenjdk/openjdk11:x86_64-alpine-jre-11.0.11_9 image (fixed version)
