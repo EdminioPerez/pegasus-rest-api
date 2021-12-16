@@ -16,6 +16,8 @@ import com.greek.service.repositories.MunicipalityRepository;
 import com.greek.service.repositories.PostalCodesRepository;
 import com.greek.service.repositories.ProvinceRepository;
 import com.greek.service.repositories.SexRepository;
+import java.text.Collator;
+import java.util.Comparator;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.MessageSource;
@@ -95,10 +97,9 @@ public class SimpleDomainServiceImpl implements SimpleDomainService {
                             LocaleContextHolder.getLocale()));
         }
 
-        //        ubicacionGeograficaItems.sort(
-        //                Comparator.comparing(
-        //                        UbicacionGeografica::getNombreUbicacionGeografica,
-        // Collator.getInstance()));
+        ubicacionGeograficaItems.sort(
+                Comparator.comparing(
+                        UbicacionGeografica::getNombreUbicacionGeografica, Collator.getInstance()));
 
         return ubicacionGeograficaItems;
     }

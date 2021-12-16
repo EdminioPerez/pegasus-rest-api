@@ -3,6 +3,7 @@ package com.greek.service.repositories.custom;
 
 import com.greek.main.hibernate.model.Persona;
 import com.greek.service.repositories.PersonCustomRepository;
+import com.gvt.security.jwt.utils.JwtUtils;
 import java.text.Normalizer;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -75,7 +76,7 @@ public class PersonCustomRepositoryImpl implements PersonCustomRepository {
 
         query.append(" and p.organizacion.id = ?" + paramPlace);
         queryCount.append(" and p.organizacion.id = ?" + paramPlace);
-        //		parameters.add(JwtUtils.getJwtAuthenticationDetails().getRootCenterId());
+        parameters.add(JwtUtils.getRootCenterId());
 
         Query jpqlquery = entityManager.createQuery(query.toString());
         for (int x = 0; x < parameters.size(); ++x) {

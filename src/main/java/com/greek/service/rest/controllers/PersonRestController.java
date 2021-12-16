@@ -42,20 +42,16 @@ public class PersonRestController extends CrudRestController<PersonDto, PersonLi
         PersonDto savedPersonDto = null;
 
         try {
-            Persona personEntity = personService.save(personMapper.fromDtoToEntityForSave(dto));
-            savedPersonDto = personMapper.fromEntityToDto(personEntity);
-
-            savedPersonDto.setProvinceId(personEntity.getCodigoPostal().getProvincia().getId());
-            savedPersonDto.setMunicipalityId(personEntity.getCodigoPostal().getPoblacion().getId());
+            savedPersonDto = super.save(dto);
         } catch (DataIntegrityViolationException e) {
             personService.checkPersonIsPresentBehaviour(
                     personMapper.fromDtoToEntityForSave(dto), e);
         }
 
-        //		if (savedPersonDto != null) {
-        //			savedPersonDto.setProvinceId(dto.getProvinceId());
-        //			savedPersonDto.setMunicipalityId(dto.getMunicipalityId());
-        //		}
+        if (savedPersonDto != null) {
+            savedPersonDto.setProvinceId(dto.getProvinceId());
+            savedPersonDto.setMunicipalityId(dto.getMunicipalityId());
+        }
 
         return savedPersonDto;
     }
